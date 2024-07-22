@@ -51,6 +51,8 @@ Route::middleware('auth')->group(function () {
         Route::prefix('cashier')->group(function () {
             Route::get('/', [OrderController::class, 'index'])->name('cashier.cashier');
             Route::post('/orders', [OrderController::class, 'store'])->name('cashier.orders.store');
+            Route::get('/orders/{order}', [OrderController::class, 'show'])->name('cashier.orders.show');
+            Route::get('/orders/{order}/invoice', [OrderController::class, 'invoice'])->name('cashier.orders.invoice');
             Route::get('/home', [OrderController::class, 'home'])->name('cashier.orders.home');
         });
 

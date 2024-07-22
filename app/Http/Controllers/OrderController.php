@@ -87,6 +87,36 @@ class OrderController extends Controller
         return redirect()->back();
     }
 
+    public function show(Order $order)
+    {
+        $record = $order->load([
+            'orderItems',
+            'orderItems.product',
+            'orderItems.product.category',
+            'employee',
+            'customer',
+        ]);
+
+        return Inertia::render('Cashier/Order', [
+            'record' => $record,
+        ]);
+    }
+
+    public function invoice(Order $order)
+    {
+        $record = $order->load([
+            'orderItems',
+            'orderItems.product',
+            'orderItems.product.category',
+            'employee',
+            'customer',
+        ]);
+
+        return Inertia::render('Cashier/Invoice', [
+            'record' => $record,
+        ]);
+    }
+
     public function home(Request $request)
     {
         $records = Order::query()
