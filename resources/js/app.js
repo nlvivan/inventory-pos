@@ -1,5 +1,5 @@
-import "./bootstrap";
 import "../css/app.css";
+import "./bootstrap";
 
 import { createApp, h } from "vue";
 import { createInertiaApp, Link } from "@inertiajs/vue3";
@@ -7,8 +7,6 @@ import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { ZiggyVue } from "../../vendor/tightenco/ziggy/dist/vue.m";
 import AntDesignVue from "ant-design-vue";
 import "ant-design-vue/dist/reset.css";
-import AuthenticatedLayoutVue from "./Layouts/AuthenticatedLayout.vue";
-
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 
 createInertiaApp({

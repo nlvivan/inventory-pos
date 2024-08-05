@@ -136,4 +136,21 @@ class OrderController extends Controller
             'filters' => $request->only('search'),
         ]);
     }
+
+    public function payOrder(Request $request, Order $order)
+    {
+
+        $request->validate([
+            'cash' => 'required|numeric|gt:'.$order->total_amount,
+        ]);
+
+        $order->update([
+            'cash_amount' => $request->cash,
+            'status' => 'paid',
+            'change_amount' => $request->cash - $order->total_amount,
+            'employee_id' => auth()->user()->id,
+        ]);
+
+        return redirect()->back();
+    }
 }

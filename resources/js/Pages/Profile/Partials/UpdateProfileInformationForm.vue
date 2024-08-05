@@ -37,36 +37,26 @@ const form = useForm({
         <a-form
             @submit.prevent="form.patch(route('profile.update'))"
             class="mt-6 space-y-6"
+            layout="vertical"
         >
             <div>
-                <InputLabel for="name" value="Name" />
-
-                <TextInput
-                    id="name"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.name"
-                    required
-                    autofocus
-                    autocomplete="name"
-                />
-
-                <InputError class="mt-2" :message="form.errors.name" />
+                <a-form-item
+                    label="Name"
+                    :validate-status="form.errors.name ? 'error' : null"
+                    :help="form.errors.name"
+                >
+                    <a-input v-model:value="form.name" />
+                </a-form-item>
             </div>
 
             <div>
-                <InputLabel for="email" value="Email" />
-
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autocomplete="username"
-                />
-
-                <InputError class="mt-2" :message="form.errors.email" />
+                <a-form-item
+                    label="Email"
+                    :validate-status="form.errors.email ? 'error' : null"
+                    :help="form.errors.email"
+                >
+                    <a-input v-model:value="form.email" />
+                </a-form-item>
             </div>
 
             <div v-if="mustVerifyEmail && user.email_verified_at === null">
@@ -91,7 +81,9 @@ const form = useForm({
             </div>
 
             <div class="flex items-center gap-4">
-                <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
+                <a-button type="primary" :loading="form.processing"
+                    >Save</a-button
+                >
 
                 <Transition
                     enter-active-class="transition ease-in-out"

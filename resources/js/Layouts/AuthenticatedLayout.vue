@@ -28,7 +28,7 @@ const openKeys = ref([]);
 const menus = [
     {
         label: "Dashboard",
-        path: route("dashboard"),
+        path: route("admin.dashboard"),
         icon: IconDashboard,
     },
     {

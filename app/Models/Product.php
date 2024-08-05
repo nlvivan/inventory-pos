@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\Searchable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Product extends Model
@@ -35,5 +36,10 @@ class Product extends Model
     public function productReturn(): HasOne
     {
         return $this->hasOne(ProductReturn::class);
+    }
+
+    public function carts(): HasMany
+    {
+        return $this->hasMany(Cart::class);
     }
 }

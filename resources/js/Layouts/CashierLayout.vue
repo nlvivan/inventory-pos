@@ -90,15 +90,16 @@
                                                 :key="item.name"
                                                 v-slot="{ active }"
                                             >
-                                                <a
+                                                <Link
                                                     :href="item.href"
+                                                    :method="item.method"
                                                     :class="[
                                                         active
                                                             ? 'bg-gray-100'
                                                             : '',
                                                         'block px-4 py-2 text-sm text-gray-700',
                                                     ]"
-                                                    >{{ item.name }}</a
+                                                    >{{ item.name }}</Link
                                                 >
                                             </MenuItem>
                                         </MenuItems>
@@ -162,8 +163,8 @@ const navigation = computed(() => {
     ];
 });
 const userNavigation = [
-    { name: "Your Profile", href: "#" },
-    { name: "Settings", href: "#" },
-    { name: "Sign out", href: "#" },
+    { name: "Your Profile", href: "#", method: "get" },
+    { name: "Settings", href: "#", method: "get" },
+    { name: "Sign out", href: route("logout"), method: "post" },
 ];
 </script>

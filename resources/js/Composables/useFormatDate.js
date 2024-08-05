@@ -27,8 +27,14 @@ export function useFormatDate() {
         return dayjs.tz.guess();
     };
 
-    const formatDate = (date) => {
-        return dayjs.utc(date).format("MMM DD YYYY h:mm A");
+    const formatDate = (date, localTimeZone = false, format = null) => {
+        if (localTimeZone) {
+            return dayjs
+                .utc(date)
+                .tz(timeZone)
+                .format(format ? format : "M/D/YY [at] h:mm A z");
+        }
+        return dayjs(date).tz("America/Chicago").format("MMM DD YYYY h:mm A");
     };
 
     const formatDateTime = (created_at) => {
@@ -110,8 +116,23 @@ export function useFormatDate() {
         return dayjs(date).isToday();
     };
 
+    const isLast24Hour = (date) => {
+        return dayjs().diff(dayjs(date), "hour") < 24;
+    };
+
     const formatDateRange = (date) => {
         return dayjs(date).format("YYYY/MM/DD");
+    };
+
+    const formatGraphDates = (date) => {
+        return dayjs(date).format("ddd MMM D YYYY");
+    };
+
+    const formatCategoryDates = (date, type) => {
+        if (type === "last_30") {
+            return dayjs(date).format("MMM D");
+        }
+        return dayjs(date).format("MMM YYYY");
     };
 
     return {
@@ -125,5 +146,8 @@ export function useFormatDate() {
         weekRangeDate,
         monthRangeDate,
         getUserTimezone,
+        formatGraphDates,
+        formatCategoryDates,
+        isLast24Hour,
     };
 }

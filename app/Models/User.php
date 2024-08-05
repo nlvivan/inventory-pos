@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -45,6 +46,17 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    public function handleRedirectPath()
+    {
+        if ($this->hasRole('admin')) {
+            return route('admin.dashboard');
+        } elseif ($this->hasRole('cashier')) {
+            return route('cashier.orders.home');
+        } elseif ($this->hasRole('customer')) {
+            return route('home.index');
+        }
+    }
+
     public function ordersAsEmployee(): HasMany
     {
         return $this->hasMany(Order::class, 'employee_id');
@@ -53,5 +65,10 @@ class User extends Authenticatable
     public function ordersAsCustomer(): HasMany
     {
         return $this->hasMany(Order::class, 'customer_id');
+    }
+
+    public function carts(): HasMany
+    {
+        return $this->hasMany(Cart::class);
     }
 }

@@ -4,14 +4,52 @@ import { Head, useForm, router, usePage } from "@inertiajs/vue3";
 import { ref, reactive, computed } from "vue";
 import { watchDebounced } from "@vueuse/core";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons-vue";
-import { message } from "ant-design-vue";
+import { message, notification } from "ant-design-vue";
 import { useFormatDate } from "@/Composables/useFormatDate";
 const { formatDate } = useFormatDate();
 
 const props = defineProps({
     record: Object,
     filters: Object,
+    errors: Object,
 });
+
+const form = useForm({
+    cash: "",
+});
+
+const openPayOrderModal = ref(false);
+
+const changeAmount = computed(() => {
+    return form.cash ? form.cash - totalAmount.value : "";
+});
+
+const totalAmount = computed(() => {
+    return props.record.order_items.reduce(
+        (sum, item) => sum + item.total_price,
+        0
+    );
+});
+
+const payOrder = () => {
+    form.post(route("cashier.orders.pay", props.record.id), {
+        onSuccess: () => {
+            notification.success({
+                title: "Order Paid Successfully",
+                message: "Order has been paid successfully",
+            });
+            form.reset();
+            form.errors = {};
+            router.get(route("cashier.orders.invoice", props.record.id));
+        },
+    });
+};
+
+const handleCancelPayment = () => {
+    form.reset();
+    form.errors = {};
+    openPayOrderModal.value(false);
+};
 </script>
 <template>
     <CashierLayout>
@@ -37,6 +75,7 @@ const props = defineProps({
                     </p>
                     <div class="flex gap-2">
                         <button
+                            @click="openPayOrderModal = true"
                             v-if="props.record.status !== 'paid'"
                             class="px-4 py-2 rounded-lg font-semibold text-green-500"
                             style="border: 2px solid #31d038"
@@ -181,5 +220,38 @@ const props = defineProps({
                 </div>
             </div>
         </div>
+
+        <!-- Pay order Modal -->
+        <a-modal
+            v-model:open="openPayOrderModal"
+            title="Pay Order"
+            :footer="false"
+        >
+            <a-form layout="vertical" @submit="payOrder">
+                <a-form-item
+                    label="Cash"
+                    :validate-status="props.errors.cash ? 'error' : null"
+                    :help="props.errors.cash"
+                >
+                    <a-input-number v-model:value="form.cash" class="w-full" />
+                </a-form-item>
+                <a-form-item label="Change">
+                    <a-input-number
+                        v-model:value="changeAmount"
+                        class="w-full"
+                    />
+                </a-form-item>
+                <a-form-item>
+                    <div class="w-full flex justify-end gap-2">
+                        <a-button type="default" @click="handleCancelPayment">
+                            Cancel
+                        </a-button>
+                        <a-button type="primary" @click="payOrder">
+                            Pay Order
+                        </a-button>
+                    </div>
+                </a-form-item>
+            </a-form>
+        </a-modal>
     </CashierLayout>
 </template>

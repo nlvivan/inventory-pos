@@ -121,6 +121,11 @@ const handleTableChange = (event) => {
                                 >{{ record.status }}</a-tag
                             >
                             <a-tag
+                                color="orange"
+                                v-if="record.status === 'for-pick-up'"
+                                >For Pick Up</a-tag
+                            >
+                            <a-tag
                                 color="green"
                                 v-if="record.status === 'paid'"
                                 >{{ record.status }}</a-tag

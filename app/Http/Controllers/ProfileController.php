@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Order;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -59,5 +60,50 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    public function orders(Request $request)
+    {
+        $orders = Order::query()
+            ->search($request->search5)
+            ->with(['orderItems', 'orderItems.product'])
+            ->where('customer_id', Auth::user()->id)
+            ->latest()
+            ->paginate();
+
+        return Inertia::render('Customer/Orders', [
+            'orders' => $orders,
+            'filters' => $request->only('search'),
+        ]);
+    }
+
+    public function showOrder(Order $order)
+    {
+        $record = $order->load([
+            'orderItems',
+            'orderItems.product',
+            'orderItems.product.category',
+            'employee',
+            'customer',
+        ]);
+
+        return Inertia::render('Customer/Order', [
+            'record' => $record,
+        ]);
+    }
+
+    public function showInvoice(Order $order)
+    {
+        $record = $order->load([
+            'orderItems',
+            'orderItems.product',
+            'orderItems.product.category',
+            'employee',
+            'customer',
+        ]);
+
+        return Inertia::render('Customer/Invoice', [
+            'record' => $record,
+        ]);
     }
 }
