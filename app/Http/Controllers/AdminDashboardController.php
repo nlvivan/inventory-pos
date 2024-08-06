@@ -32,6 +32,7 @@ class AdminDashboardController extends Controller
             ->when($request->input('filter'), function ($query, $filter) use ($year) {
                 $query->when($filter == 'last_30', function ($query) use ($year) {
                     $query
+                        ->where('status', 'paid')
                         ->whereYear('created_at', $year)
                         ->where('created_at', '>=', now()->subDays(29))
                         ->where('created_at', '<=', now())
@@ -40,6 +41,7 @@ class AdminDashboardController extends Controller
                         ->groupBy('date');
                 })->when($filter == 'last_7', function ($query) use ($year) {
                     $query
+                        ->where('status', 'paid')
                         ->whereYear('created_at', $year)
                         ->where('created_at', '>=', now()->subDays(6))
                         ->where('created_at', '<=', now())
@@ -48,6 +50,7 @@ class AdminDashboardController extends Controller
                         ->groupBy('date');
                 })->when($filter == 'last_year', function ($query) use ($year) {
                     $query
+                        ->where('status', 'paid')
                         ->whereYear('created_at', $year)
                         ->selectRaw('MONTH(created_at) as month, SUM(total_amount) as total')
                         ->selectRaw('(SELECT CONCAT("order")) as order_type')

@@ -43,19 +43,25 @@
                                 >
                             </div>
                             <div class="ml-4 flex items-center md:ml-6">
-                                <button
-                                    type="button"
-                                    class="relative rounded-full bg-white p-1 text-[#1C486F] hover:text-[#1C486F] focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                                <a-badge
+                                    :count="$page.props.auth.notificationsCount"
                                 >
-                                    <span class="absolute -inset-1.5" />
-                                    <span class="sr-only"
-                                        >View notifications</span
+                                    <a-button
+                                        @click="showNotificationDrawer = true"
+                                        shape="circle"
+                                        type="button"
+                                        class="bg-white p-1 text-[#1C486F] hover:text-[#1C486F] focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                                     >
-                                    <BellIcon
-                                        class="h-6 w-6"
-                                        aria-hidden="true"
-                                    />
-                                </button>
+                                        <span class="absolute -inset-1.5" />
+                                        <span class="sr-only"
+                                            >View notifications</span
+                                        >
+                                        <BellIcon
+                                            class="h-6 w-6"
+                                            aria-hidden="true"
+                                        />
+                                    </a-button>
+                                </a-badge>
 
                                 <!-- Profile dropdown -->
                                 <Menu as="div" class="relative ml-3">
@@ -123,12 +129,115 @@
                     <slot />
                 </div>
             </main>
+
+            <a-drawer
+                title="Notifications"
+                placement="right"
+                :closable="false"
+                :open="showNotificationDrawer"
+                @close="showNotificationDrawer = false"
+            >
+                <div
+                    v-for="notification in $page.props.auth.notifications"
+                    :key="notification.id"
+                >
+                    <div
+                        class="flex items-center justify-between border-2 p-4"
+                        style="border-bottom: 1px solid rgb(156 163 175)"
+                    >
+                        <div
+                            class="flex gap-4"
+                            v-if="notification.type === 'expiry_date'"
+                        >
+                            <div class="">
+                                <WarningOutlined
+                                    class="text-amber-500 text-2xl"
+                                />
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <div class="font-medium text-gray-500">
+                                    {{ notification.data.product_name }}
+                                    is about to expire
+                                </div>
+                                <div class="text-sm text-gray-500">
+                                    Expiry Date:
+                                    {{ notification.data.expiry_date }}
+                                </div>
+                                <div
+                                    class="text-sm text-amber-500 cursor-pointer"
+                                >
+                                    Mark as Read
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="flex gap-4"
+                            v-if="notification.type === 'low_stock'"
+                        >
+                            <div class="">
+                                <WarningOutlined
+                                    class="text-amber-500 text-2xl"
+                                />
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <div class="font-medium text-gray-500">
+                                    {{ notification.data.product_name }}
+                                    is in low stock
+                                </div>
+                                <div class="text-sm text-gray-500">
+                                    Remaining Stock:
+                                    {{ notification.data.remaining_stock }}
+                                </div>
+                                <div
+                                    class="text-sm text-amber-500 cursor-pointer"
+                                >
+                                    Mark as Read
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="flex gap-4"
+                            v-if="notification.type === 'new_order'"
+                        >
+                            <div class="">
+                                <InfoCircleOutlined
+                                    class="text-blue-500 text-2xl"
+                                />
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <Link
+                                    :href="
+                                        route(
+                                            'cashier.orders.show',
+                                            notification.data.order_id
+                                        )
+                                    "
+                                >
+                                    <div class="font-medium text-gray-500">
+                                        {{ notification.data.customer_name }}
+                                        has new order
+                                    </div>
+                                    <div class="text-sm text-gray-500">
+                                        Email:
+                                        {{ notification.data.customer_email }}
+                                    </div>
+                                </Link>
+                                <div
+                                    class="text-sm text-amber-500 cursor-pointer"
+                                >
+                                    Mark as Read
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a-drawer>
         </div>
     </a-config-provider>
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { usePage } from "@inertiajs/vue3";
 import {
     Disclosure,
@@ -140,8 +249,11 @@ import {
     MenuItems,
 } from "@headlessui/vue";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/vue/24/outline";
+import { InfoCircleOutlined } from "@ant-design/icons-vue";
 
 const page = computed(() => usePage());
+
+const showNotificationDrawer = ref(false);
 
 const user = {
     name: page.value.props?.auth?.user?.name,

@@ -71,4 +71,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Cart::class);
     }
+
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class);
+    }
 }

@@ -35,6 +35,8 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
                 'cartCount' => $request->user() ? auth()->user()->carts->count() : 0,
+                'notificationsCount' => $request->user() ? auth()->user()->notifications()->where('read', false)->count() : 0,
+                'notifications' => auth()?->user()?->notifications()->where('read', false)->latest()->get(),
             ],
             'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),

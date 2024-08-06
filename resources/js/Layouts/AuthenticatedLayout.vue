@@ -9,6 +9,10 @@ import {
     MenuFoldOutlined,
     DownOutlined,
     AppstoreOutlined,
+    BellOutlined,
+    CheckOutlined,
+    WarningOutlined,
+    InfoCircleOutlined,
 } from "@ant-design/icons-vue";
 import {
     IconDashboard,
@@ -97,6 +101,16 @@ watch(pageWatch, () => {
 
 const handleLogout = () => {
     router.post(route("logout"));
+};
+
+const showNotificationDrawer = ref(false);
+
+const handleNotification = () => {
+    showNotificationDrawer.value = true;
+};
+
+const handleMarkAsRead = (id) => {
+    router.post(route("notifications.markAsRead", id));
 };
 </script>
 <template>
@@ -204,7 +218,20 @@ const handleLogout = () => {
                                 {{ $page.props.system_identity }}
                             </div>
                         </div>
-                        <div>
+                        <div class="mt-2 flex items-center gap-2">
+                            <a-badge
+                                :count="$page.props.auth.notificationsCount"
+                            >
+                                <a-button
+                                    shape="circle"
+                                    @click="handleNotification"
+                                >
+                                    <template #icon>
+                                        <BellOutlined />
+                                    </template>
+                                </a-button>
+                            </a-badge>
+
                             <a-dropdown
                                 :trigger="['click']"
                                 class="flex items-center float-right"
@@ -263,6 +290,109 @@ const handleLogout = () => {
                         <slot />
                     </div>
                 </a-layout-content>
+                <!-- drawer -->
+                <a-drawer
+                    title="Notifications"
+                    placement="right"
+                    :closable="false"
+                    :open="showNotificationDrawer"
+                    @close="showNotificationDrawer = false"
+                >
+                    <div
+                        v-for="notification in $page.props.auth.notifications"
+                        :key="notification.id"
+                    >
+                        <div
+                            class="flex items-center justify-between border-2 p-4"
+                            style="border-bottom: 1px solid rgb(156 163 175)"
+                        >
+                            <div
+                                class="flex gap-4"
+                                v-if="notification.type === 'expiry_date'"
+                            >
+                                <div class="">
+                                    <WarningOutlined
+                                        class="text-amber-500 text-2xl"
+                                    />
+                                </div>
+                                <div class="flex flex-col gap-2">
+                                    <div class="font-medium text-gray-500">
+                                        {{ notification.data.product_name }}
+                                        is about to expire
+                                    </div>
+                                    <div class="text-sm text-gray-500">
+                                        Expiry Date:
+                                        {{ notification.data.expiry_date }}
+                                    </div>
+                                    <div
+                                        class="text-sm text-amber-500 cursor-pointer"
+                                        @click="
+                                            handleMarkAsRead(notification.id)
+                                        "
+                                    >
+                                        Mark as Read
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="flex gap-4"
+                                v-if="notification.type === 'low_stock'"
+                            >
+                                <div class="">
+                                    <WarningOutlined
+                                        class="text-amber-500 text-2xl"
+                                    />
+                                </div>
+                                <div class="flex flex-col gap-2">
+                                    <div class="font-medium text-gray-500">
+                                        {{ notification.data.product_name }}
+                                        is in low stock
+                                    </div>
+                                    <div class="text-sm text-gray-500">
+                                        Remaining Stock:
+                                        {{ notification.data.remaining_stock }}
+                                    </div>
+                                    <div
+                                        class="text-sm text-amber-500 cursor-pointer"
+                                        @click="
+                                            handleMarkAsRead(notification.id)
+                                        "
+                                    >
+                                        Mark as Read
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="flex gap-4"
+                                v-if="notification.type === 'new_order'"
+                            >
+                                <div class="">
+                                    <InfoCircleOutlined
+                                        class="text-blue-500 text-2xl"
+                                    />
+                                </div>
+                                <div class="flex flex-col gap-2">
+                                    <div class="font-medium text-gray-500">
+                                        {{ notification.data.customer_name }}
+                                        has new order
+                                    </div>
+                                    <div class="text-sm text-gray-500">
+                                        Email:
+                                        {{ notification.data.customer_email }}
+                                    </div>
+                                    <div
+                                        class="text-sm text-amber-500 cursor-pointer"
+                                        @click="
+                                            handleMarkAsRead(notification.id)
+                                        "
+                                    >
+                                        Mark as Read
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a-drawer>
             </a-layout>
         </a-layout>
     </a-config-provider>

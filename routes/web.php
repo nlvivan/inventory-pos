@@ -5,6 +5,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomepageController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductionBatchController;
@@ -75,6 +76,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/customer/orders/{order}', [ProfileController::class, 'showOrder'])->name('customer.orders.show');
         Route::get('/customer/orders/{order}/invoice', [ProfileController::class, 'showInvoice'])->name('customer.orders.invoice');
         Route::get('/customer/profile', [ProfileController::class, 'edit'])->name('customer.profile.edit');
+
+        Route::post('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
     });
 });
 
