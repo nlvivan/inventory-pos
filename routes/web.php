@@ -11,6 +11,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductionBatchController;
 use App\Http\Controllers\ProductReturnController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -47,6 +48,7 @@ Route::middleware('auth')->group(function () {
             Route::resource('production-batches', ProductionBatchController::class);
             Route::get('/dashboard', [AdminDashboardController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('admin.dashboard');
             Route::get('/dashboard/sales', [AdminDashboardController::class, 'getSalesData'])->name('admin.dashboard.sales');
+            Route::resource('users', UserController::class);
         });
 
     });
@@ -63,7 +65,7 @@ Route::middleware('auth')->group(function () {
 
     });
 
-    Route::group(['middleware' => ['role:admin|cashier|customer']], function () {
+    Route::group(['middleware' => ['role:admin|cashier|customer', 'verified']], function () {
         Route::get('products/{product}/view-details', [HomepageController::class, 'productDetails'])->name('home.product.details');
         Route::get('/carts', [CartController::class, 'index'])->name('cart.index');
         Route::post('/carts', [CartController::class, 'store'])->name('cart.store');

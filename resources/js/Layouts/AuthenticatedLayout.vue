@@ -55,6 +55,11 @@ const menus = [
         path: route("product-returns.index"),
         icon: IconCategory,
     },
+    {
+        label: "Users",
+        path: route("users.index"),
+        icon: IconCategory,
+    },
 ];
 
 const mapLinkItem = (link) => {
