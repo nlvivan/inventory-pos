@@ -54,12 +54,14 @@ const userNavigation = [
             <div
                 class="py-4 mx-auto max-w-7xl px-4 sm:px-6 lg:px-4 flex justify-around items-baseline"
             >
-                <a-button type="primary">
-                    <template #icon>
-                        <AppstoreOutlined />
-                    </template>
-                    Browse All Categories
-                </a-button>
+                <Link :href="route('home.index')">
+                    <a-button type="primary">
+                        <template #icon>
+                            <AppstoreOutlined />
+                        </template>
+                        Browse All Categories
+                    </a-button>
+                </Link>
                 <div class="flex gap-2">
                     <Link>
                         <a-button

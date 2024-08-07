@@ -141,7 +141,7 @@ class OrderController extends Controller
     {
 
         $request->validate([
-            'cash' => 'required|numeric|gt:'.$order->total_amount,
+            'cash' => 'required|numeric|gte:'.$order->total_amount,
         ]);
 
         $order->update([

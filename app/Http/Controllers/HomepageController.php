@@ -44,4 +44,18 @@ class HomepageController extends Controller
             'product' => ProductResource::make($product->load(['category', 'stock'])),
         ]);
     }
+
+    public function productsByCategory(Request $request, Category $category)
+    {
+        $productsByCategory = $category->products()
+            ->search($request->search)
+            ->with(['category', 'productionBatch', 'stock'])
+            ->latest()->paginate(25);
+
+        return Inertia::render('Homepage/ProductsByCategory', [
+            'records' => ProductResource::collection($productsByCategory),
+            'filters' => $request->only('search'),
+            'category' => $category,
+        ]);
+    }
 }

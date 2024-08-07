@@ -71,28 +71,35 @@ const email = ref("");
                     v-for="(category, index) in categories.data"
                     :key="category.id"
                 >
-                    <div class="carousel__item">
-                        <div
-                            class="flex flex-col justify-center items-center p-6 rounded-lg"
-                            :class="
-                                index % 2 === 0
-                                    ? 'bg-[#F3F7FC]'
-                                    : ' bg-[#FFF8EB]'
-                            "
-                        >
-                            <img
-                                :src="
-                                    category.image_url ??
-                                    '/storage/IMG_4359.jpg'
+                    <Link
+                        :href="route('home.productsByCategory', category.id)"
+                        class="no-underline"
+                    >
+                        <div class="carousel__item">
+                            <div
+                                class="flex flex-col justify-center items-center p-6 rounded-lg"
+                                :class="
+                                    index % 2 === 0
+                                        ? 'bg-[#F3F7FC]'
+                                        : ' bg-[#FFF8EB]'
                                 "
-                                class="w-12 h-12"
-                                alt="category image"
-                            />
-                            <p class="text-lg font-semibold text-[#1C486F]">
-                                {{ category.name }}
-                            </p>
-                        </div>
-                    </div>
+                            >
+                                <img
+                                    :src="
+                                        category.image_url ??
+                                        '/storage/IMG_4359.jpg'
+                                    "
+                                    class="w-12 h-12"
+                                    alt="category image"
+                                />
+                                <p
+                                    class="text-lg font-semibold text-[#1C486F] no-underline"
+                                >
+                                    {{ category.name }}
+                                </p>
+                            </div>
+                        </div></Link
+                    >
                 </Slide>
 
                 <template #addons>
