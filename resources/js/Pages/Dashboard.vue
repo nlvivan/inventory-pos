@@ -1,6 +1,7 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head } from "@inertiajs/vue3";
+import SalesIcon from "@/Components/SalesIcon.vue";
 
 import { IconReportMoney } from "@tabler/icons-vue";
 import OrderData from "@/Components/OrderData.vue";
@@ -33,7 +34,7 @@ const props = defineProps({
                             <div
                                 class="w-10 h-10 flex items-center justify-center rounded-full border border-blue-500"
                             >
-                                <IconReportMoney />
+                                <SalesIcon />
                             </div>
                         </div>
                     </a-card>
@@ -51,7 +52,7 @@ const props = defineProps({
                             <div
                                 class="w-10 h-10 flex items-center justify-center rounded-full border border-blue-500"
                             >
-                                <IconReportMoney />
+                                <SalesIcon />
                             </div>
                         </div>
                     </a-card>
@@ -69,7 +70,7 @@ const props = defineProps({
                             <div
                                 class="w-10 h-10 flex items-center justify-center rounded-full border border-blue-500"
                             >
-                                <IconReportMoney />
+                                <SalesIcon />
                             </div>
                         </div>
                     </a-card>
@@ -87,7 +88,7 @@ const props = defineProps({
                             <div
                                 class="w-10 h-10 flex items-center justify-center rounded-full border border-blue-500"
                             >
-                                <IconReportMoney />
+                                <SalesIcon />
                             </div>
                         </div>
                     </a-card>

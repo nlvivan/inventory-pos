@@ -160,7 +160,7 @@
                                     is about to expire
                                 </div>
                                 <div class="text-sm text-gray-500">
-                                    Expiry Date:
+                                    Nearly expired:
                                     {{ notification.data.expiry_date }}
                                 </div>
                                 <div
@@ -185,7 +185,7 @@
                                     is in low stock
                                 </div>
                                 <div class="text-sm text-gray-500">
-                                    Remaining Stock:
+                                    Nearly in low stock:
                                     {{ notification.data.remaining_stock }}
                                 </div>
                                 <div
