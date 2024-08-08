@@ -17,7 +17,9 @@ defineProps({
 const user = usePage().props.auth.user;
 
 const form = useForm({
-    name: user.name,
+    first_name: user.first_name,
+    last_name: user.last_name,
+    middle_name: user.middle_name,
     email: user.email,
 });
 </script>
@@ -35,17 +37,35 @@ const form = useForm({
         </header>
 
         <a-form
-            @submit.prevent="form.patch(route('profile.update'))"
+            @submit.prevent="form.put(route('customer.profile.update'))"
             class="mt-6 space-y-6"
             layout="vertical"
         >
             <div>
                 <a-form-item
-                    label="Name"
-                    :validate-status="form.errors.name ? 'error' : null"
-                    :help="form.errors.name"
+                    label="First Name"
+                    :validate-status="form.errors.first_name ? 'error' : null"
+                    :help="form.errors.first_name"
                 >
-                    <a-input v-model:value="form.name" />
+                    <a-input v-model:value="form.first_name" />
+                </a-form-item>
+            </div>
+            <div>
+                <a-form-item
+                    label="Middle Name"
+                    :validate-status="form.errors.middle_name ? 'error' : null"
+                    :help="form.errors.middle_name"
+                >
+                    <a-input v-model:value="form.middle_name" />
+                </a-form-item>
+            </div>
+            <div>
+                <a-form-item
+                    label="Last Name"
+                    :validate-status="form.errors.last_name ? 'error' : null"
+                    :help="form.errors.last_name"
+                >
+                    <a-input v-model:value="form.last_name" />
                 </a-form-item>
             </div>
 
@@ -81,7 +101,10 @@ const form = useForm({
             </div>
 
             <div class="flex items-center gap-4">
-                <a-button type="primary" :loading="form.processing"
+                <a-button
+                    html-type="submit"
+                    type="primary"
+                    :loading="form.processing"
                     >Save</a-button
                 >
 

@@ -7,7 +7,9 @@ import TextInput from "@/Components/TextInput.vue";
 import { Head, Link, useForm } from "@inertiajs/vue3";
 
 const form = useForm({
-    name: "",
+    first_name: "",
+    last_name: "",
+    middle_name: "",
     email: "",
     password: "",
     password_confirmation: "",
@@ -34,11 +36,29 @@ const submit = () => {
         <a-form name="basic" layout="vertical" @submit.prevent="submit">
             <div>
                 <a-form-item
-                    :validate-status="form.errors.name ? 'error' : null"
-                    :help="form.errors.name"
-                    label="Name"
+                    :validate-status="form.errors.first_name ? 'error' : null"
+                    :help="form.errors.first_name"
+                    label="First Name"
                 >
-                    <a-input size="large" v-model:value="form.name" />
+                    <a-input size="large" v-model:value="form.first_name" />
+                </a-form-item>
+            </div>
+            <div>
+                <a-form-item
+                    :validate-status="form.errors.middle_name ? 'error' : null"
+                    :help="form.errors.middle_name"
+                    label="Middle Name"
+                >
+                    <a-input size="large" v-model:value="form.middle_name" />
+                </a-form-item>
+            </div>
+            <div>
+                <a-form-item
+                    :validate-status="form.errors.last_name ? 'error' : null"
+                    :help="form.errors.last_name"
+                    label="Last Name"
+                >
+                    <a-input size="large" v-model:value="form.last_name" />
                 </a-form-item>
             </div>
             <div>
