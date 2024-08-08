@@ -323,7 +323,7 @@ const handleMarkAsRead = (id) => {
                                 <div class="flex flex-col gap-2">
                                     <div class="font-medium text-gray-500">
                                         {{ notification.data.product_name }}
-                                        is about to expire
+                                        is nearly to expire
                                     </div>
                                     <div class="text-sm text-gray-500">
                                         Expiry Date:
@@ -351,7 +351,7 @@ const handleMarkAsRead = (id) => {
                                 <div class="flex flex-col gap-2">
                                     <div class="font-medium text-gray-500">
                                         {{ notification.data.product_name }}
-                                        is in low stock
+                                        is nearly out of stock
                                     </div>
                                     <div class="text-sm text-gray-500">
                                         Remaining Stock:
