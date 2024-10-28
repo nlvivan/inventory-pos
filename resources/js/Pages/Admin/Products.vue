@@ -98,6 +98,11 @@ const columns = [
         key: "price",
     },
     {
+        title: "Expiry Date",
+        dataIndex: "expiry_date",
+        key: "expiry_date",
+    },
+    {
         title: "Action",
         dataIndex: "action",
         key: "action",

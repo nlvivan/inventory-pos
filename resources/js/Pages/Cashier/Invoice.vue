@@ -30,12 +30,17 @@ console.log(props.record);
             </div>
 
             <div class="flex w-full justify-end">
-                <button
-                    class="px-4 py-2 rounded-lg font-semibold text-amber-500"
-                    style="border: 2px solid #f59e0b"
+                <a
+                    :href="route('cashier.orders.invoice.pdf', props.record.id)"
+                    target="_blank"
                 >
-                    Print as PDF
-                </button>
+                    <button
+                        class="px-4 py-2 rounded-lg font-semibold text-amber-500"
+                        style="border: 2px solid #f59e0b"
+                    >
+                        Print as PDF
+                    </button>
+                </a>
             </div>
             <div
                 class="mt-4 rounded-xl w-full p-4"

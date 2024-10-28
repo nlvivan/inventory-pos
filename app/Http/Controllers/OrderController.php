@@ -6,6 +6,7 @@ use App\Http\Resources\ProductResource;
 use App\Models\Order;
 use App\Models\OrderItems;
 use App\Models\Product;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -115,6 +116,21 @@ class OrderController extends Controller
         return Inertia::render('Cashier/Invoice', [
             'record' => $record,
         ]);
+    }
+
+    public function showInvoice(Order $order)
+    {
+        $record = $order->load([
+            'orderItems',
+            'orderItems.product',
+            'orderItems.product.category',
+            'employee',
+            'customer',
+        ]);
+
+        $pdf = Pdf::loadView('pdf.invoice', ['record' => $record]);
+
+        return $pdf->stream('invoice.pdf');
     }
 
     public function home(Request $request)

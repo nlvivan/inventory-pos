@@ -59,6 +59,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/orders', [OrderController::class, 'store'])->name('cashier.orders.store');
             Route::get('/orders/{order}', [OrderController::class, 'show'])->name('cashier.orders.show');
             Route::get('/orders/{order}/invoice', [OrderController::class, 'invoice'])->name('cashier.orders.invoice');
+            Route::get('/orders/{order}/invoice/pdf', [OrderController::class, 'showInvoice'])->name('cashier.orders.invoice.pdf');
             Route::get('/home', [OrderController::class, 'home'])->name('cashier.orders.home');
             Route::post('/orders/{order}/pay', [OrderController::class, 'payOrder'])->name('cashier.orders.pay');
         });

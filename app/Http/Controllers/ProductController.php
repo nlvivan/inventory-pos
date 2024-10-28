@@ -34,7 +34,7 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'image_url' => ['nullable', 'mimes:png,jpg,jpeg', 'max:10240'],
+            'image_url' => ['nullable', 'mimes:png,jpg,jpeg,webp', 'max:10240'],
             'category_id' => ['required', 'integer', 'exists:categories,id'],
             'production_batch_id' => ['required', 'integer', 'exists:production_batches,id'],
             'name' => ['required', 'string', 'max:255'],
@@ -99,7 +99,7 @@ class ProductController extends Controller
             $stock->save();
         } else {
             // Product doesn't exist in stocks table, create a new entry
-            $stock = new Stock();
+            $stock = new Stock;
             $stock->product_id = $product->id;
             $stock->stock = data_get($data, 'stock');
             $stock->save();

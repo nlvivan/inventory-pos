@@ -143,7 +143,7 @@ const email = ref("");
                                     ₱ {{ product.price }}
                                 </span>
                                 <p class="text-sm text-[#1C486F] mt-2">
-                                    Stock: {{ product.stock.stock }}
+                                    Stock: {{ product?.stock?.stock }}
                                 </p>
                             </div>
                             <div class="mt-4">
