@@ -224,7 +224,7 @@ const deleteData = () => {
         onSuccess: () => {
             loading.value = false;
             cancelDeleteData();
-            message.success("Product Deleted Sucessfully!");
+            message.success("Product Archived Sucessfully!");
         },
     });
 };
@@ -362,7 +362,7 @@ watchDebounced(
                                                 </template>
                                             </a-button>
                                         </a-tooltip>
-                                        <a-tooltip title="Delete">
+                                        <a-tooltip title="Archive">
                                             <a-button
                                                 @click="
                                                     showDeleteConfirmationModal(
@@ -542,7 +542,7 @@ watchDebounced(
                 @ok="deleteData"
                 @cancel="cancelDeleteData"
             >
-                <p>Are you sure you want to delete this product?</p>
+                <p>Are you sure you want to archive this product?</p>
                 <p>Type '<b>delete</b>' to proceed</p>
                 <div class="mt-4">
                     <a-input v-model:value="deleteInput"></a-input>

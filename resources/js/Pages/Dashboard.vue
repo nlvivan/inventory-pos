@@ -169,6 +169,7 @@ function filterTopSaleshandler() {
                     <a-table
                         :columns="columns"
                         :data-source="props.topSales.data"
+                        :pagination="false"
                     >
                         <template #bodyCell="{ column, record }">
                             <template v-if="column.dataIndex === 'image'">
