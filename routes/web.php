@@ -11,6 +11,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductionBatchController;
 use App\Http\Controllers\ProductReturnController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StockController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +45,8 @@ Route::middleware('auth')->group(function () {
             Route::resource('categories', CategoryController::class);
             Route::resource('products', ProductController::class);
             Route::resource('product-returns', ProductReturnController::class);
+            Route::resource('stocks', StockController::class);
+            Route::post('/stocks/{stock}/add-stock', [StockController::class, 'addStock'])->name('stocks.addStock');
             Route::post('/products/{product}/add-stock', [ProductController::class, 'addStock'])->name('products.addStock');
             Route::resource('production-batches', ProductionBatchController::class);
             Route::get('/dashboard', [AdminDashboardController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('admin.dashboard');

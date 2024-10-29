@@ -36,7 +36,6 @@ class ProductController extends Controller
         $data = $request->validate([
             'image_url' => ['nullable', 'mimes:png,jpg,jpeg,webp', 'max:10240'],
             'category_id' => ['required', 'integer', 'exists:categories,id'],
-            'production_batch_id' => ['required', 'integer', 'exists:production_batches,id'],
             'name' => ['required', 'string', 'max:255'],
             'notes' => ['nullable', 'max:255'],
             'price' => ['required', 'numeric'],
@@ -58,7 +57,6 @@ class ProductController extends Controller
         $data = $request->validate([
             'image_url' => ['nullable', 'mimes:png,jpg,jpeg', 'max:10240'],
             'category_id' => ['required', 'integer', 'exists:categories,id'],
-            'production_batch_id' => ['required', 'integer', 'exists:production_batches,id'],
             'name' => ['required', 'string', 'max:255'],
             'notes' => ['nullable', 'max:255'],
             'price' => ['required', 'numeric'],

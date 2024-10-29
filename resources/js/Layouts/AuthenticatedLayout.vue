@@ -51,6 +51,11 @@ const menus = [
         icon: IconCategory,
     },
     {
+        label: "Stocks",
+        path: route("stocks.index"),
+        icon: IconCategory,
+    },
+    {
         label: "Product Returns",
         path: route("product-returns.index"),
         icon: IconCategory,

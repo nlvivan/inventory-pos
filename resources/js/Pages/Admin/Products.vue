@@ -17,7 +17,6 @@ const props = defineProps({
     records: Object,
     filters: Object,
     categories: Array,
-    productionBatches: Array,
 });
 
 const imageUrl = ref("");
@@ -26,7 +25,6 @@ const form = useForm({
     id: "",
     image_url: "",
     category_id: "",
-    production_batch_id: "",
     name: "",
     notes: "",
     price: "",
@@ -76,11 +74,6 @@ const columns = [
         title: "Category",
         dataIndex: ["category", "name"],
         key: "category",
-    },
-    {
-        title: "Batch Number",
-        dataIndex: ["production_batch", "batch_number"],
-        key: "description",
     },
     {
         title: "Stock",
@@ -205,7 +198,6 @@ const updateData = () => {
             image_url: form.image_url,
             notes: form.notes,
             category_id: form.category_id,
-            production_batch_id: form.production_batch_id,
             price: form.price,
             sku: form.sku,
             expiry_date: form.expiry_date,
@@ -245,7 +237,6 @@ const editData = (data) => {
     isEdit.value = true;
     form.id = data.id;
     form.category_id = data.category_id;
-    form.production_batch_id = data.production_batch_id;
     form.name = data.name;
     form.notes = data.notes;
     form.price = data.price;
@@ -469,33 +460,6 @@ watchDebounced(
                                         ?.map((category) => ({
                                             value: category.id,
                                             label: category.name,
-                                        }))
-                                        .sort((a, b) =>
-                                            a.label.localeCompare(b.label)
-                                        )
-                                "
-                                :filter-option="filterOption"
-                            />
-                        </a-form-item>
-                        <a-form-item
-                            label="Production Batch Number"
-                            :validate-status="
-                                form.errors.production_batch_id ? 'error' : null
-                            "
-                            :help="form.errors.production_batch_id"
-                        >
-                            <a-select
-                                ref="select"
-                                show-search
-                                allow-clear
-                                v-model:value="form.production_batch_id"
-                                placeholder="Select Bacth Number"
-                                style="width: 100%"
-                                :options="
-                                    props.productionBatches
-                                        ?.map((productionBatch) => ({
-                                            value: productionBatch.id,
-                                            label: `${productionBatch.batch_number} (${productionBatch.production_date})`,
                                         }))
                                         .sort((a, b) =>
                                             a.label.localeCompare(b.label)
