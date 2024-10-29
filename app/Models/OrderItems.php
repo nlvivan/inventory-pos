@@ -21,4 +21,15 @@ class OrderItems extends Model
     {
         return $this->belongsTo(Order::class);
     }
+
+    public function scopeFilterDate($query, $period = 'this_month')
+    {
+        if ($period == 'today') {
+            return $query->where('created_at', '>=', now()->startOfDay())->where('created_at', '<=', now()->endOfDay());
+        } elseif ($period == 'this_week') {
+            return $query->where('created_at', '>=', now()->startOfWeek())->where('created_at', '<=', now()->endOfWeek());
+        } elseif ($period == 'this_month') {
+            return $query->where('created_at', '>=', now()->startOfMonth())->where('created_at', '<=', now()->endOfMonth());
+        }
+    }
 }

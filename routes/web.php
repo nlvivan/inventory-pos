@@ -13,6 +13,8 @@ use App\Http\Controllers\ProductReturnController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\UserController;
+use App\Http\Resources\TopSalesResource;
+use App\Models\OrderItems;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -87,6 +89,21 @@ Route::middleware('auth')->group(function () {
 
         Route::post('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
     });
+});
+
+Route::get('/test', function () {
+    $topSales = OrderItems::query()
+        ->whereHas('order', function ($query) {
+            $query->where('status', 'paid');
+        })
+        ->with('product')
+        ->selectRaw('SUM(quantity) as total_quantity, SUM(total_price) as total_price, product_id')
+        ->groupBy('product_id')
+        ->orderBy('total_quantity', 'desc')
+        ->limit(5)
+        ->get();
+
+    return TopSalesResource::collection($topSales);
 });
 
 require __DIR__.'/auth.php';
