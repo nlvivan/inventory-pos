@@ -45,7 +45,10 @@ Route::middleware('auth')->group(function () {
     Route::group(['middleware' => ['role:admin']], function () {
         Route::prefix('admin')->group(function () {
             Route::resource('categories', CategoryController::class);
+            Route::post('products/{product}/restore', action: [ProductController::class, 'restore'])->withTrashed()->name('products.restore');
+            Route::get('products/archive', [ProductController::class, 'archive'])->name('products.archive');
             Route::resource('products', ProductController::class);
+
             Route::resource('product-returns', ProductReturnController::class);
             Route::resource('stocks', StockController::class);
             Route::post('/stocks/{stock}/add-stock', [StockController::class, 'addStock'])->name('stocks.addStock');

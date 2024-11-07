@@ -35,11 +35,11 @@ const menus = [
         path: route("admin.dashboard"),
         icon: IconDashboard,
     },
-    {
-        label: "Production Batches",
-        path: route("production-batches.index"),
-        icon: IconDashboard,
-    },
+    // {
+    //     label: "Production Batches",
+    //     path: route("production-batches.index"),
+    //     icon: IconDashboard,
+    // },
     {
         label: "Categories",
         path: route("categories.index"),
@@ -48,6 +48,11 @@ const menus = [
     {
         label: "Products",
         path: route("products.index"),
+        icon: IconCategory,
+    },
+    {
+        label: "Archive Products",
+        path: route("products.archive"),
         icon: IconCategory,
     },
     {

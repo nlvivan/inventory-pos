@@ -21,7 +21,7 @@ class AdminDashboardController extends Controller
             ->whereHas('order', function ($query) {
                 $query->where('status', 'paid');
             })
-            ->filterDate($request->top_sales_filter)
+            ->filterDate($request->top_sales_filter ?? 'this_month')
             ->with('product')
             ->selectRaw('SUM(quantity) as total_quantity, SUM(total_price) as total_price,  product_id')
             ->groupBy('product_id')

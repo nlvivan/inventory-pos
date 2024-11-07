@@ -51,6 +51,7 @@
 </head>
 <body>
     <div class="invoice-box">
+        <img src='{{$logo}}' style="width: 150px;"/>
         <h2>Invoice</h2>
 
         <!-- Company Information -->

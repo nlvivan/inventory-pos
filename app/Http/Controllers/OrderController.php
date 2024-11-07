@@ -128,7 +128,29 @@ class OrderController extends Controller
             'customer',
         ]);
 
-        $pdf = Pdf::loadView('pdf.invoice', ['record' => $record]);
+        // Path to the logo
+        $imagePath = public_path('assets/login_logo.png');
+
+        // Check if the image exists
+        if (! file_exists($imagePath)) {
+            return response()->json(['error' => 'Image not found'], 404);
+        }
+
+        // Get the image content
+        $imageData = file_get_contents($imagePath);
+
+        // Convert the image data to Base64
+        $base64 = base64_encode($imageData);
+
+        // Create a data URL
+        $mimeType = mime_content_type($imagePath);
+        $dataUrl = 'data:'.$mimeType.';base64,'.$base64;
+
+        $pdf = Pdf::loadView('pdf.invoice',
+            [
+                'record' => $record,
+                'logo' => $dataUrl,
+            ]);
 
         return $pdf->stream('invoice.pdf');
     }
