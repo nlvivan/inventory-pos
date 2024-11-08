@@ -8,13 +8,40 @@ import { IconReportMoney } from "@tabler/icons-vue";
 import OrderData from "@/Components/OrderData.vue";
 
 const props = defineProps({
-    totalSalesThisDay: "",
-    totalSalesThisMonth: "",
-    totalSalesThisWeek: "",
-    totalSalesThisYear: "",
+    totalSales: "",
     topSales: "",
     filters: Object,
+    nearlyExpiredProducts: "",
+    productNearlyOutOfStock: "",
 });
+
+const nearlyExpiredProductsColumns = [
+    {
+        title: "Product Name",
+        dataIndex: "name",
+        key: "name",
+    },
+
+    {
+        title: "Expiry Date",
+        dataIndex: "expiry_date",
+        key: "expiry_date",
+    },
+];
+
+const productNearlyOutOfStockColumns = [
+    {
+        title: "Product Name",
+        dataIndex: ["product", "name"],
+        key: "name",
+    },
+
+    {
+        title: "Stock",
+        dataIndex: "stock",
+        key: "stock",
+    },
+];
 
 const columns = [
     {
@@ -39,12 +66,13 @@ const columns = [
     },
 ];
 
-const selectedFilter = ref(props.filters.topSalesFilter ?? "this_month");
+const selectedFilter = ref(props.filters.top_sales_filter ?? "this_month");
+const selectedSalesFilter = ref(props.filters.sales_filter ?? "today");
 
 const options = [
     {
-        label: "This Month",
-        value: "this_month",
+        label: "Today",
+        value: "today",
     },
     {
         label: "This Week",
@@ -52,8 +80,13 @@ const options = [
     },
 
     {
-        label: "Today",
-        value: "today",
+        label: "This Month",
+        value: "this_month",
+    },
+
+    {
+        label: "This Year",
+        value: "this_year",
     },
 ];
 
@@ -79,81 +112,9 @@ function filterTopSaleshandler() {
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <p class="font-bold text-2xl">Dashboard</p>
-                <div class="w-full grid grid-cols-4 gap-6">
-                    <a-card :bordered="false">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <span class="text-xl font-bold">
-                                    ₱ {{ props.totalSalesThisDay }}
-                                </span>
-                                <br />
-                                <span class="text-sm">Total Sales Today</span>
-                            </div>
-                            <div
-                                class="w-10 h-10 flex items-center justify-center rounded-full border border-blue-500"
-                            >
-                                <SalesIcon />
-                            </div>
-                        </div>
-                    </a-card>
-                    <a-card :bordered="false">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <span class="text-xl font-bold">
-                                    ₱ {{ props.totalSalesThisWeek }}
-                                </span>
-                                <br />
-                                <span class="text-sm"
-                                    >Total Sales This Week</span
-                                >
-                            </div>
-                            <div
-                                class="w-10 h-10 flex items-center justify-center rounded-full border border-blue-500"
-                            >
-                                <SalesIcon />
-                            </div>
-                        </div>
-                    </a-card>
-                    <a-card :bordered="false">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <span class="text-xl font-bold">
-                                    ₱ {{ props.totalSalesThisMonth }}
-                                </span>
-                                <br />
-                                <span class="text-sm"
-                                    >Total Sales This Month</span
-                                >
-                            </div>
-                            <div
-                                class="w-10 h-10 flex items-center justify-center rounded-full border border-blue-500"
-                            >
-                                <SalesIcon />
-                            </div>
-                        </div>
-                    </a-card>
-                    <a-card :bordered="false">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <span class="text-xl font-bold">
-                                    ₱ {{ props.totalSalesThisYear }}
-                                </span>
-                                <br />
-                                <span class="text-sm"
-                                    >Total Sales This Year</span
-                                >
-                            </div>
-                            <div
-                                class="w-10 h-10 flex items-center justify-center rounded-full border border-blue-500"
-                            >
-                                <SalesIcon />
-                            </div>
-                        </div>
-                    </a-card>
-                </div>
-                <a-card class="mt-6">
+                <a-card>
                     <template #title>
-                        <span class="font-bold">Top Sales</span>
+                        <span class="font-bold">Sales</span>
 
                         <a-select
                             ref="select"
@@ -166,27 +127,63 @@ function filterTopSaleshandler() {
                         >
                         </a-select>
                     </template>
-                    <a-table
-                        :columns="columns"
-                        :data-source="props.topSales.data"
-                        :pagination="false"
-                    >
-                        <template #bodyCell="{ column, record }">
-                            <template v-if="column.dataIndex === 'image'">
-                                <img
-                                    class="h-16 w-16 rounded-full"
-                                    :src="
-                                        record.product.image_url ??
-                                        '/storage/IMG_4359.jpg'
-                                    "
-                                />
-                            </template>
-                            <template v-if="column.dataIndex === 'total_price'">
-                                ₱ {{ record.total_price }}
-                            </template>
-                        </template>
-                    </a-table>
+                    <div class="grid grid-cols-2 gap-2">
+                        <a-card title="Total Sales" class="mt-6">
+                            <h1 class="text-8xl font-semibold text-center">
+                                ₱ {{ props.totalSales }}
+                            </h1>
+                        </a-card>
+                        <a-card title="Product Top Sales" class="mt-6">
+                            <a-table
+                                :columns="columns"
+                                :data-source="props.topSales.data"
+                                :pagination="false"
+                            >
+                                <template #bodyCell="{ column, record }">
+                                    <template
+                                        v-if="column.dataIndex === 'image'"
+                                    >
+                                        <img
+                                            class="h-16 w-16 rounded-full"
+                                            :src="
+                                                record.product.image_url ??
+                                                '/storage/IMG_4359.jpg'
+                                            "
+                                        />
+                                    </template>
+                                    <template
+                                        v-if="
+                                            column.dataIndex === 'total_price'
+                                        "
+                                    >
+                                        ₱ {{ record.total_price }}
+                                    </template>
+                                </template>
+                            </a-table>
+                        </a-card>
+                    </div>
                 </a-card>
+
+                <div class="grid grid-cols-2 gap-2 mt-6">
+                    <div>
+                        <a-card title="Nearly Expired Products">
+                            <a-table
+                                :pagination="false"
+                                :columns="nearlyExpiredProductsColumns"
+                                :data-source="props.nearlyExpiredProducts"
+                            ></a-table>
+                        </a-card>
+                    </div>
+                    <div>
+                        <a-card title="Nearly Out of Stock Products">
+                            <a-table
+                                :pagination="false"
+                                :columns="productNearlyOutOfStockColumns"
+                                :data-source="props.productNearlyOutOfStock"
+                            ></a-table>
+                        </a-card>
+                    </div>
+                </div>
 
                 <OrderData class="mt-6" />
             </div>

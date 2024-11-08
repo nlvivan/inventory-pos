@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Resources\TopSalesResource;
 use App\Models\Order;
 use App\Models\OrderItems;
+use App\Models\Product;
+use App\Models\Stock;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -12,10 +14,11 @@ class AdminDashboardController extends Controller
 {
     public function dashboard(Request $request)
     {
-        $totalSalesThisDay = Order::where('created_at', '>=', now()->startOfDay())->where('created_at', '<=', now()->endOfDay())->where('status', 'paid')->sum('total_amount');
-        $totalSalesThisMonth = Order::where('created_at', '>=', now()->startOfMonth())->where('created_at', '<=', now()->endOfMonth())->where('status', 'paid')->sum('total_amount');
-        $totalSalesThisWeek = Order::where('created_at', '>=', now()->startOfWeek())->where('created_at', '<=', now()->endOfWeek())->where('status', 'paid')->sum('total_amount');
-        $totalSalesThisYear = Order::where('created_at', '>=', now()->startOfYear())->where('created_at', '<=', now()->endOfYear())->where('status', 'paid')->sum('total_amount');
+
+        $totalSales = Order::query()
+            ->filterDate($request->top_sales_filter ?? 'today')
+            ->where('status', 'paid')
+            ->sum('total_amount');
 
         $topSales = OrderItems::query()
             ->whereHas('order', function ($query) {
@@ -29,13 +32,24 @@ class AdminDashboardController extends Controller
             ->limit(5)
             ->get();
 
+        $startOfMonth = date('Y-m-01');
+        $endOfMonth = date('Y-m-t');
+
+        $nearlyExpiredProducts = Product::whereBetween('expiry_date', [$startOfMonth, $endOfMonth])->get();
+
+        $productNearlyOutOfStock = Stock::query()
+            ->with('product')
+            ->whereNotNull('stock')
+            ->whereNotNull('critical_stock')
+            ->whereColumn('stock', '<', 'critical_stock')
+            ->get();
+
         return Inertia::render('Dashboard', [
-            'totalSalesThisDay' => $totalSalesThisDay,
-            'totalSalesThisMonth' => $totalSalesThisMonth,
-            'totalSalesThisWeek' => $totalSalesThisWeek,
-            'totalSalesThisYear' => $totalSalesThisYear,
+            'totalSales' => $totalSales,
             'topSales' => TopSalesResource::collection($topSales),
-            'filters' => $request->only('topSalesFilter'),
+            'filters' => $request->only(['top_sales_filter', 'sales_filter']),
+            'nearlyExpiredProducts' => $nearlyExpiredProducts,
+            'productNearlyOutOfStock' => $productNearlyOutOfStock,
         ]);
     }
 

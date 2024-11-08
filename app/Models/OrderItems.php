@@ -30,6 +30,8 @@ class OrderItems extends Model
             return $query->where('created_at', '>=', now()->startOfWeek())->where('created_at', '<=', now()->endOfWeek());
         } elseif ($period == 'this_month') {
             return $query->where('created_at', '>=', now()->startOfMonth())->where('created_at', '<=', now()->endOfMonth());
+        } elseif ($period == 'this_year') {
+            return $query->where('created_at', '>=', now()->startOfYear())->where('created_at', '<=', now()->endOfYear());
         }
     }
 }
