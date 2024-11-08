@@ -31,6 +31,32 @@ class ProductController extends Controller
         ]);
     }
 
+    public function archive(Request $request)
+    {
+        $products = Product::query()
+            ->onlyTrashed()
+            ->with(['category', 'productionBatch', 'stock'])
+            ->search($request->search)
+            ->paginate();
+
+        $categories = Category::query()->get(['id', 'name']);
+        $productionBatches = ProductionBatch::query()->get(['id', 'batch_number', 'production_date']);
+
+        return Inertia::render('Admin/ArchiveProducts', [
+            'records' => ProductResource::collection($products),
+            'categories' => $categories,
+            'productionBatches' => $productionBatches,
+            'filters' => $request->only(['search']),
+        ]);
+    }
+
+    public function restore(Product $product)
+    {
+        $product->restore();
+
+        return redirect()->back();
+    }
+
     public function store(Request $request)
     {
         $data = $request->validate([
