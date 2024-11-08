@@ -177,6 +177,7 @@ const submitOrders = () => {
                 <div class="col-span-1">
                     <div class="flex flex-col gap-8">
                         <a-input
+                            addon-before="₱"
                             size="large"
                             class="py-4"
                             v-model:value="totalAmount"
@@ -188,11 +189,7 @@ const submitOrders = () => {
                             class="py-4"
                             placeholder="Search Anything..."
                         />
-                        <a-button
-                            size="large"
-                            type="primary"
-                            class=""
-                            @click="searchItem"
+                        <a-button type="primary" class="" @click="searchItem"
                             >Search</a-button
                         >
                         <div
