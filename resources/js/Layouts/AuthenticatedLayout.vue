@@ -229,10 +229,12 @@ const handleMarkAsRead = (id) => {
                                     @click="() => (collapsed = !collapsed)"
                                 />
                             </div>
+
                             <div class="font-semibold ml-4 hidden md:block">
                                 {{ $page.props.system_identity }}
                             </div>
                         </div>
+                        <h1>3 Lito's ( Sales and Inventory Management )</h1>
                         <div class="mt-2 flex items-center gap-2">
                             <a-badge
                                 :count="$page.props.auth.notificationsCount"
