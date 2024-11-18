@@ -56,6 +56,7 @@ Route::middleware('auth')->group(function () {
             Route::resource('production-batches', ProductionBatchController::class);
             Route::get('/dashboard', [AdminDashboardController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('admin.dashboard');
             Route::get('/dashboard/sales', [AdminDashboardController::class, 'getSalesData'])->name('admin.dashboard.sales');
+            Route::get('/dashboard/sales/export', [AdminDashboardController::class, 'getOrderItems'])->name('admin.dashboard.order-items.export');
             Route::resource('users', UserController::class);
         });
 

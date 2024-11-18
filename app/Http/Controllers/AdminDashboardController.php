@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Models\Stock;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Spatie\SimpleExcel\SimpleExcelWriter;
 
 class AdminDashboardController extends Controller
 {
@@ -90,5 +91,43 @@ class AdminDashboardController extends Controller
             ->get();
 
         return $totalAmount;
+    }
+
+    public function getOrderItems(Request $request)
+    {
+        $orderItems = OrderItems::query()
+            ->with(['product', 'order'])
+            ->whereHas('order', function ($query) {
+                $query->where('status', 'paid');
+            })
+            ->when($request->input('filter'), function ($query, $filter) {
+                $query->when($filter == 'last_30', function ($query) {
+                    $query
+                        ->where('created_at', '>=', now()->subDays(29))
+                        ->where('created_at', '<=', now());
+                })->when($filter == 'last_7', function ($query) {
+                    $query
+                        ->where('created_at', '>=', now()->subDays(6))
+                        ->where('created_at', '<=', now());
+                })->when($filter == 'last_year', function ($query) {
+                    $query
+                        ->whereYear('created_at', now()->year);
+                });
+            })
+            ->get();
+
+        $csv = SimpleExcelWriter::streamDownload('sales.csv');
+
+        foreach ($orderItems as $orderItem) {
+            $csv->addRow([
+                'Date' => date('M. d, Y', strtotime($orderItem->order->created_at)),
+                'Unit Price' => $orderItem->product->price,
+                'Product Name' => $orderItem->product->name,
+                'Quantity' => $orderItem->quantity,
+                'Total Price' => $orderItem->total_price,
+            ]);
+        }
+
+        return $csv->toBrowser();
     }
 }

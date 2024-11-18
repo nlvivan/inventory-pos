@@ -70,6 +70,9 @@ async function getData(filterBy = "last_7") {
             chart: {
                 id: "outgoing-fax-activity",
                 type: "area",
+                toolbar: {
+                    show: false,
+                },
                 zoom: {
                     enabled: false,
                 },
@@ -158,6 +161,14 @@ const setCategories = (salesData, filterBy) => {
     return;
 };
 
+const ExportToCsv = () => {
+    return route("admin.dashboard.order-items.export", {
+        _query: {
+            filter: selectedFilter.value,
+        },
+    });
+};
+
 onMounted(() => {
     getData();
 });
@@ -167,18 +178,27 @@ onMounted(() => {
     <div>
         <a-card :bordered="false" :loading="loading">
             <template #title>
-                <span class="font-bold">Sales Data</span>
-
-                <a-select
-                    ref="select"
-                    class="text-xs float-right font-bold"
-                    name="reseller"
-                    style="width: 140px"
-                    :options="options"
-                    v-model:value="selectedFilter"
-                    @change="getData"
-                >
-                </a-select>
+                <div class="flex justify-between items-center">
+                    <span class="font-bold">Sales Data</span>
+                    <div class="flex items-center gap-2">
+                        <a
+                            target="_blank"
+                            :href="`/admin/dashboard/sales/export?filter=${selectedFilter}`"
+                        >
+                            <a-button type="primary">Export to CSV</a-button>
+                        </a>
+                        <a-select
+                            ref="select"
+                            class="text-xs float-right font-bold"
+                            name="reseller"
+                            style="width: 140px"
+                            :options="options"
+                            v-model:value="selectedFilter"
+                            @change="getData"
+                        >
+                        </a-select>
+                    </div>
+                </div>
             </template>
             <div>
                 <apexChart
