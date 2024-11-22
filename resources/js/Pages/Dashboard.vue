@@ -195,11 +195,7 @@ function handleChangeFilter() {
                                         "
                                     >
                                         ₱
-                                        {{
-                                            parseFloat(
-                                                record.total_price
-                                            ).toFixed(2)
-                                        }}
+                                        {{ record.total_price + ".00" }}
                                     </template>
                                 </template>
                             </a-table>
