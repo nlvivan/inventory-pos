@@ -193,7 +193,12 @@ function handleChangeFilter() {
                                 <template
                                     v-if="column.dataIndex === 'total_price'"
                                 >
-                                    ₱ {{ record.total_price }}
+                                    ₱
+                                    {{
+                                        parseFloat(record.total_price).toFixed(
+                                            2
+                                        )
+                                    }}
                                 </template>
                             </template>
                         </a-table>
