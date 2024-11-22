@@ -16,8 +16,15 @@ class AdminDashboardController extends Controller
     public function dashboard(Request $request)
     {
 
+        $request->mergeIfMissing([
+            'from' => date('Y/m/d', strtotime('first day of this month')),
+            'to' => date('Y/m/d'),
+        ]);
+
         $totalSales = Order::query()
-            ->filterDate($request->top_sales_filter ?? 'today')
+            ->when($request->from && $request->to, function ($query) use ($request) {
+                $query->whereBetween('created_at', [$request->from, $request->to]);
+            })
             ->where('status', 'paid')
             ->sum('total_amount');
 
@@ -25,7 +32,9 @@ class AdminDashboardController extends Controller
             ->whereHas('order', function ($query) {
                 $query->where('status', 'paid');
             })
-            ->filterDate($request->top_sales_filter ?? 'this_month')
+            ->when($request->from && $request->to, function ($query) use ($request) {
+                $query->whereBetween('created_at', [$request->from, $request->to]);
+            })
             ->with('product')
             ->selectRaw('SUM(quantity) as total_quantity, SUM(total_price) as total_price,  product_id')
             ->groupBy('product_id')
@@ -46,11 +55,12 @@ class AdminDashboardController extends Controller
             ->get();
 
         return Inertia::render('Dashboard', [
-            'totalSales' => $totalSales,
+            'totalSales' => number_format((float) $totalSales, 2),
             'topSales' => TopSalesResource::collection($topSales),
             'filters' => $request->only(['top_sales_filter', 'sales_filter']),
             'nearlyExpiredProducts' => $nearlyExpiredProducts,
             'productNearlyOutOfStock' => $productNearlyOutOfStock,
+            'filters' => $request->only(['from', 'to']),
         ]);
     }
 

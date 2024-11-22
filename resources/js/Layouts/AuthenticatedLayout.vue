@@ -234,7 +234,22 @@ const handleMarkAsRead = (id) => {
                                 {{ $page.props.system_identity }}
                             </div>
                         </div>
-                        <h1>3 Lito's ( Sales and Inventory Management )</h1>
+                        <div class="flex py-2 justify-center items-center">
+                            <img
+                                src="/storage/assets/IMG_5472 (1).png"
+                                class="w-8"
+                            />
+                            <img
+                                src="/storage/assets/IMG_5472.png"
+                                class="w-36 mt-2"
+                                v-if="!collapsed"
+                            />
+                            <span
+                                class="text-2xl font-bold mt-1.5 text-blue-950"
+                            >
+                                (Sales And Inventory Management)</span
+                            >
+                        </div>
                         <div class="mt-2 flex items-center gap-2">
                             <a-badge
                                 :count="$page.props.auth.notificationsCount"
@@ -264,6 +279,7 @@ const handleMarkAsRead = (id) => {
                                         >
                                             {{ $page.props.auth.user.name }}
                                         </span>
+
                                         <img
                                             class="h-10 w-10 rounded-full"
                                             :src="`https://ui-avatars.com/api/?name=${$page.props.auth.user.name}`"
@@ -303,7 +319,7 @@ const handleMarkAsRead = (id) => {
                     </div>
                 </a-layout-header>
                 <a-layout-content>
-                    <div class="max-w-7xl mx-auto p-5 py-10">
+                    <div class="max-w-7xl mx-auto p-4 py-4">
                         <slot />
                     </div>
                 </a-layout-content>
