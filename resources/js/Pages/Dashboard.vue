@@ -154,23 +154,17 @@ function handleChangeFilter() {
     <AuthenticatedLayout>
         <Head title="Dashboard" />
         <div class="">
-            <p class="font-bold text-2xl">Dashboard</p>
-
-            <a-card class="mt-2">
-                <template #title>
-                    <div class="flex justify-between items-center">
-                        <span class="font-bold">Sales</span>
-
-                        <a-range-picker
-                            v-model:value="dateRange"
-                            @change="handleChangeFilter"
-                        />
-                        <div></div>
-                    </div>
-                </template>
+            <a-card class="mt-2" :title="false">
+                <div class="flex justify-center items-center mb-2">
+                    <!-- Added flexbox centering -->
+                    <a-range-picker
+                        v-model:value="dateRange"
+                        @change="handleChangeFilter"
+                    />
+                </div>
                 <div class="grid grid-cols-2 gap-2">
                     <a-card title="Total Sales" class="mt-2">
-                        <h1 class="text-6xl font-semibold text-center">
+                        <h1 class="text-3xl font-semibold text-center">
                             ₱ {{ props.totalSales }}
                         </h1>
                     </a-card>
@@ -213,6 +207,7 @@ function handleChangeFilter() {
                             :pagination="false"
                             :columns="nearlyExpiredProductsColumns"
                             :data-source="props.nearlyExpiredProducts"
+                            :scroll="{ y: 1500 }"
                         ></a-table>
                     </a-card>
                 </div>
