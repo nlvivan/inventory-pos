@@ -54,8 +54,10 @@ class AdminDashboardController extends Controller
             ->whereColumn('stock', '<', 'critical_stock')
             ->get();
 
+        $totalSales = number_format((float) $totalSales, 2);
+
         return Inertia::render('Dashboard', [
-            'totalSales' => number_format((float) $totalSales, 2),
+            'totalSales' => (string) $totalSales,
             'topSales' => TopSalesResource::collection($topSales),
             'filters' => $request->only(['top_sales_filter', 'sales_filter']),
             'nearlyExpiredProducts' => $nearlyExpiredProducts,

@@ -174,7 +174,6 @@ function handleChangeFilter() {
                                 :columns="columns"
                                 :data-source="props.topSales.data"
                                 :pagination="false"
-                                :scroll="{ y: 1500 }"
                                 size="small"
                             >
                                 <template #bodyCell="{ column, record }">
@@ -195,7 +194,7 @@ function handleChangeFilter() {
                                         "
                                     >
                                         ₱
-                                        {{ record.total_price + ".00" }}
+                                        {{ record.total_price }}
                                     </template>
                                 </template>
                             </a-table>
