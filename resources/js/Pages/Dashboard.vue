@@ -174,6 +174,7 @@ function handleChangeFilter() {
                                 :columns="columns"
                                 :data-source="props.topSales.data"
                                 :pagination="false"
+                                :scroll="{ y: 1500 }"
                                 size="small"
                             >
                                 <template #bodyCell="{ column, record }">
@@ -215,6 +216,7 @@ function handleChangeFilter() {
                             :columns="nearlyExpiredProductsColumns"
                             :data-source="props.nearlyExpiredProducts"
                             :scroll="{ y: 1500 }"
+                            size="small"
                         ></a-table>
                     </a-card>
                 </div>
@@ -224,6 +226,8 @@ function handleChangeFilter() {
                             :pagination="false"
                             :columns="productNearlyOutOfStockColumns"
                             :data-source="props.productNearlyOutOfStock"
+                            :scroll="{ y: 1500 }"
+                            size="small"
                         ></a-table>
                     </a-card>
                 </div>
