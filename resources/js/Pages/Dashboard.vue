@@ -154,51 +154,58 @@ function handleChangeFilter() {
     <AuthenticatedLayout>
         <Head title="Dashboard" />
         <div class="">
-            <a-card class="mt-2" :title="false">
-                <div class="flex justify-center items-center mb-2">
-                    <!-- Added flexbox centering -->
-                    <a-range-picker
-                        v-model:value="dateRange"
-                        @change="handleChangeFilter"
-                    />
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <a-card title="Total Sales" class="mt-2">
-                        <h1 class="text-3xl font-semibold text-center">
-                            ₱ {{ props.totalSales }}
-                        </h1>
-                    </a-card>
-                    <a-card title="Product Top Sales" class="mt-2">
-                        <a-table
-                            :columns="columns"
-                            :data-source="props.topSales.data"
-                            :pagination="false"
-                        >
-                            <template #bodyCell="{ column, record }">
-                                <template v-if="column.dataIndex === 'image'">
-                                    <img
-                                        class="h-16 w-16 rounded-full"
-                                        :src="
-                                            record.product.image_url ??
-                                            '/storage/IMG_4359.jpg'
+            <div class="">
+                <div class="mt-2 bg-white p-1.5" :title="false">
+                    <div class="flex justify-center items-center mb-2">
+                        <!-- Added flexbox centering -->
+                        <a-range-picker
+                            v-model:value="dateRange"
+                            @change="handleChangeFilter"
+                        />
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <a-card title="Total Sales" class="mt-2">
+                            <h1 class="text-2xl font-semibold text-center">
+                                ₱ {{ props.totalSales }}
+                            </h1>
+                        </a-card>
+                        <a-card title="Product Top Sales" class="mt-2">
+                            <a-table
+                                :columns="columns"
+                                :data-source="props.topSales.data"
+                                :pagination="false"
+                                size="small"
+                            >
+                                <template #bodyCell="{ column, record }">
+                                    <template
+                                        v-if="column.dataIndex === 'image'"
+                                    >
+                                        <img
+                                            class="h-16 w-16 rounded-full"
+                                            :src="
+                                                record.product.image_url ??
+                                                '/storage/IMG_4359.jpg'
+                                            "
+                                        />
+                                    </template>
+                                    <template
+                                        v-if="
+                                            column.dataIndex === 'total_price'
                                         "
-                                    />
+                                    >
+                                        ₱
+                                        {{
+                                            parseFloat(
+                                                record.total_price
+                                            ).toFixed(2)
+                                        }}
+                                    </template>
                                 </template>
-                                <template
-                                    v-if="column.dataIndex === 'total_price'"
-                                >
-                                    ₱
-                                    {{
-                                        parseFloat(record.total_price).toFixed(
-                                            2
-                                        )
-                                    }}
-                                </template>
-                            </template>
-                        </a-table>
-                    </a-card>
+                            </a-table>
+                        </a-card>
+                    </div>
                 </div>
-            </a-card>
+            </div>
 
             <div class="grid grid-cols-2 gap-2 mt-2">
                 <div>
