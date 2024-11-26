@@ -177,7 +177,7 @@ const email = ref("");
 
 <style>
 .bg-image {
-    background-image: url("/storage/assets/HERO BANNER.png");
+    background-image: url("/assets/HERO BANNER.png");
     height: 420px; /* You must set a specified height */
     background-position: center; /* Center the image */
     background-repeat: no-repeat; /* Do not repeat the image */

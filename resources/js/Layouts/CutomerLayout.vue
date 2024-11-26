@@ -118,8 +118,8 @@ const userNavigation = [
                 class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-4 flex items-center justify-center gap-4"
             >
                 <div class="logo flex items-center justify-center gap-2">
-                    <img src="/storage/assets/IMG_5472 (1).png" class="w-8" />
-                    <img src="/storage/assets/IMG_5472.png" class="w-36 mt-2" />
+                    <img src="/assets/IMG_5472 (1).png" class="w-8" />
+                    <img src="/assets/IMG_5472.png" class="w-36 mt-2" />
                 </div>
                 <a-input-search
                     class="mt-2"
@@ -216,11 +216,11 @@ const userNavigation = [
                                     class="logo flex items-center justify-center gap-2"
                                 >
                                     <img
-                                        src="/storage/assets/IMG_5472 (1).png"
+                                        src="/assets/IMG_5472 (1).png"
                                         class="w-8"
                                     />
                                     <img
-                                        src="/storage/assets/IMG_5472.png"
+                                        src="/assets/IMG_5472.png"
                                         class="w-36 mt-2"
                                     />
                                 </div>

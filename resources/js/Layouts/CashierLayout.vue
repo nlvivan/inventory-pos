@@ -14,11 +14,11 @@
                             <div class="flex-shrink-0">
                                 <div class="flex gap-2">
                                     <img
-                                        src="/storage/assets/IMG_5472 (1).png"
+                                        src="/assets/IMG_5472 (1).png"
                                         class="w-8"
                                     />
                                     <img
-                                        src="/storage/assets/IMG_5472.png"
+                                        src="/assets/IMG_5472.png"
                                         class="w-36 mt-2"
                                     />
                                 </div>

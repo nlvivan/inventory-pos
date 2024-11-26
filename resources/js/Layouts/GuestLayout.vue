@@ -16,10 +16,7 @@ import { Link } from "@inertiajs/vue3";
         >
             <div class="absolute top-6">
                 <Link href="/">
-                    <img
-                        src="/storage/assets/login_logo.png"
-                        class="w-[212px]"
-                    />
+                    <img src="/assets/login_logo.png" class="w-[212px]" />
                 </Link>
             </div>
 

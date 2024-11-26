@@ -152,12 +152,9 @@ const handleMarkAsRead = (id) => {
             >
                 <Link :href="route('dashboard')">
                     <div class="logo flex items-center justify-center gap-2">
+                        <img src="/assets/IMG_5472 (1).png" class="w-8" />
                         <img
-                            src="/storage/assets/IMG_5472 (1).png"
-                            class="w-8"
-                        />
-                        <img
-                            src="/storage/assets/IMG_5472.png"
+                            src="/assets/IMG_5472.png"
                             class="w-36 mt-2"
                             v-if="!collapsed"
                         />
@@ -235,12 +232,9 @@ const handleMarkAsRead = (id) => {
                             </div>
                         </div>
                         <div class="flex py-2 justify-center items-center">
+                            <img src="/assets/IMG_5472 (1).png" class="w-8" />
                             <img
-                                src="/storage/assets/IMG_5472 (1).png"
-                                class="w-8"
-                            />
-                            <img
-                                src="/storage/assets/IMG_5472.png"
+                                src="/assets/IMG_5472.png"
                                 class="w-36 mt-2"
                                 v-if="!collapsed"
                             />
