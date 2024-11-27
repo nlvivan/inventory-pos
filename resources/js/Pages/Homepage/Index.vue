@@ -47,9 +47,7 @@ const email = ref("");
         <div class="bg-image mt-6 flex flex-col justify-center items-center">
             <p class="text-4xl font-bold text-[#1C486F]">Your One Stop Shop</p>
             <p class="text-4xl font-bold text-[#1C486F]">Grocery Store</p>
-            <p class="text-lg text-[#838383]">
-                Save up to 60% off on your first order
-            </p>
+            <p class="text-lg text-[#838383]"></p>
         </div>
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-4 mt-4">
             <p class="text-2xl font-semibold text-[#1C486F]">
