@@ -48,6 +48,17 @@ const email = ref("");
             <p class="text-4xl font-bold text-[#1C486F]">Your One Stop Shop</p>
             <p class="text-4xl font-bold text-[#1C486F]">Grocery Store</p>
             <p class="text-lg text-[#838383]"></p>
+            <a-input-search
+                v-model:value="value"
+                placeholder="Enter your email address"
+                class="w-1/4"
+                size="large"
+                @search="onSearch"
+            >
+                <template #enterButton>
+                    <a-button type="primary">Subscribe</a-button>
+                </template>
+            </a-input-search>
         </div>
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-4 mt-4">
             <p class="text-2xl font-semibold text-[#1C486F]">
@@ -99,57 +110,55 @@ const email = ref("");
             <p class="text-2xl font-semibold text-[#1C486F]">New Products</p>
             <Carousel v-bind="settings" :breakpoints="breakpoints">
                 <Slide v-for="product in props.products.data" :key="product.id">
-                    <div class="carousel__item">
-                        <div
-                            class="flex flex-col justify-center items-center p-6 rounded-lg"
-                            style="
-                                border-style: solid;
-                                border-color: #adadad40;
-                                border-width: 1px;
-                            "
-                        >
+                    <div
+                        class="carousel__item flex flex-col justify-between p-4 rounded-lg border border-gray-300 shadow-md w-64 h-96"
+                    >
+                        <!-- Product Image -->
+                        <div class="flex justify-center">
                             <img
                                 :src="
                                     product.image_url ?? '/storage/IMG_4359.jpg'
                                 "
-                                class="w-24 h-24"
-                                alt="category image"
+                                class="w-24 h-24 object-cover"
+                                alt="product image"
                             />
-                            <div class="mt-4 text-left flex flex-col gap-1">
-                                <span class="text-md text-[#ADADAD]">
-                                    {{ product.category?.name }}
-                                </span>
-                                <span
-                                    class="text-lg font-semibold text-[#1C486F]"
-                                >
-                                    {{ product.name }}
-                                </span>
-                                <span
-                                    class="text-amber-500 text-lg font-semibold mt-6"
-                                >
-                                    ₱ {{ product.price }}
-                                </span>
-                                <p class="text-sm text-[#1C486F] mt-2">
-                                    Stock: {{ product?.stock?.stock }}
-                                </p>
-                            </div>
-                            <div class="mt-4">
-                                <Link
-                                    :href="
-                                        route(
-                                            'home.product.details',
-                                            product.id
-                                        )
-                                    "
-                                >
-                                    <a-button type="primary" block>
-                                        <template #icon>
-                                            <ShoppingCartOutlined />
-                                        </template>
-                                        Add to Cart
-                                    </a-button>
-                                </Link>
-                            </div>
+                        </div>
+
+                        <!-- Product Details -->
+                        <div class="mt-4 text-left flex flex-col gap-1 h-32">
+                            <span class="text-sm text-gray-400 truncate">
+                                {{ product.category?.name }}
+                            </span>
+                            <span
+                                class="text-lg font-semibold text-blue-900 truncate"
+                            >
+                                {{ product.name }}
+                            </span>
+                            <span
+                                class="text-lg font-semibold text-amber-500 mt-2"
+                            >
+                                ₱ {{ product.price }}
+                            </span>
+                            <p class="text-sm text-blue-900">
+                                Stock: {{ product?.stock?.stock }}
+                            </p>
+                        </div>
+
+                        <!-- Add to Cart Button -->
+                        <div class="mt-auto w-full">
+                            <Link
+                                :href="
+                                    route('home.product.details', product.id)
+                                "
+                                class="block"
+                            >
+                                <a-button type="primary" block>
+                                    <template #icon>
+                                        <ShoppingCartOutlined />
+                                    </template>
+                                    Add to Cart
+                                </a-button>
+                            </Link>
                         </div>
                     </div>
                 </Slide>
@@ -164,7 +173,7 @@ const email = ref("");
 
 <style>
 .bg-image {
-    background-image: url("/assets/HERO BANNER.png");
+    background-image: url("/storage/assets/HERO BANNER.png");
     height: 420px; /* You must set a specified height */
     background-position: center; /* Center the image */
     background-repeat: no-repeat; /* Do not repeat the image */
