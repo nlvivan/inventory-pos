@@ -80,7 +80,7 @@ const placeOrder = () => {
                                         : 'border: 1px solid #ccc'
                                 "
                             >
-                                8 AM - 10 AM
+                                8:00 AM - 10:00 AM
                             </div>
                             <div
                                 @click="selectedSchedule = '10AM-12PM'"
@@ -96,7 +96,7 @@ const placeOrder = () => {
                                         : 'border: 1px solid #ccc'
                                 "
                             >
-                                10 AM - 12 PM
+                                10:00 AM - 12:00 PM
                             </div>
                         </div>
                         <div class="mt-4">
@@ -118,7 +118,7 @@ const placeOrder = () => {
                                             : 'border: 1px solid #ccc'
                                     "
                                 >
-                                    12 PM - 1 PM
+                                    12:00 PM - 1:00 PM
                                 </div>
                                 <div
                                     @click="selectedSchedule = '1PM-2PM'"
@@ -134,7 +134,7 @@ const placeOrder = () => {
                                             : 'border: 1px solid #ccc'
                                     "
                                 >
-                                    1 PM - 2 PM
+                                    1:00 PM - 2:00 PM
                                 </div>
                                 <div
                                     @click="selectedSchedule = '2PM-3PM'"
@@ -150,7 +150,7 @@ const placeOrder = () => {
                                             : 'border: 1px solid #ccc'
                                     "
                                 >
-                                    2 PM - 3 PM
+                                    2:00 PM - 3:00 PM
                                 </div>
                                 <div
                                     @click="selectedSchedule = '3PM-4PM'"
@@ -166,7 +166,7 @@ const placeOrder = () => {
                                             : 'border: 1px solid #ccc'
                                     "
                                 >
-                                    3 PM - 4 PM
+                                    3:00 PM - 4:00 PM
                                 </div>
                                 <div
                                     @click="selectedSchedule = '4PM-5PM'"
@@ -182,7 +182,7 @@ const placeOrder = () => {
                                             : 'border: 1px solid #ccc'
                                     "
                                 >
-                                    4 PM - 5 PM
+                                    4:00 PM - 5:00 PM
                                 </div>
                                 <div
                                     @click="selectedSchedule = '5PM-6PM'"
@@ -198,7 +198,7 @@ const placeOrder = () => {
                                             : 'border: 1px solid #ccc'
                                     "
                                 >
-                                    5 PM - 6 PM
+                                    5:00 PM - 6:00 PM
                                 </div>
                                 <div
                                     @click="selectedSchedule = '6PM-7PM'"
@@ -214,7 +214,7 @@ const placeOrder = () => {
                                             : 'border: 1px solid #ccc'
                                     "
                                 >
-                                    6 PM - 7 PM
+                                    6:00 PM - 7:00 PM
                                 </div>
                             </div>
                         </div>
