@@ -343,7 +343,6 @@ watchDebounced(
                                 </template>
                                 <template v-if="column.dataIndex === 'action'">
                                     <div class="flex gap-2">
-                                        
                                         <a-tooltip title="Restore">
                                             <a-button
                                                 @click="
@@ -539,7 +538,7 @@ watchDebounced(
                         danger
                         @click="deleteData"
                         :loading="form.processing || updateLoading"
-                        :disabled="deleteInput !== 'restore'"
+                        :disabled="deleteInput !== 'Restore'"
                     >
                         Restore
                     </a-button>
