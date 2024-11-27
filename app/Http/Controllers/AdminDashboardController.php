@@ -23,7 +23,10 @@ class AdminDashboardController extends Controller
 
         $totalSales = Order::query()
             ->when($request->from && $request->to, function ($query) use ($request) {
-                $query->whereBetween('created_at', [$request->from, $request->to]);
+                $query->where(function ($query) use ($request) {
+                    $query->where('created_at', '>=', $request->from)
+                        ->orWhere('created_at', '<=', $request->to);
+                });
             })
             ->where('status', 'paid')
             ->sum('total_amount');
