@@ -39,7 +39,7 @@ class NotifyUserProductLowStock extends Command
                         $data = [
                             'product_name' => $product->name,
                             'product_id' => $product->id,
-                            'remaining_stock' => $product->stock->stock,
+                            'remaining_stock' => $product?->stock?->stock,
                         ];
 
                         Notification::create([
