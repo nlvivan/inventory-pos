@@ -69,11 +69,20 @@ const submit = () => {
                 </a-form-item>
             </div>
 
-            <div class="block mt-4">
-                <label class="flex items-center">
-                    <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ml-2 text-sm text-gray-600">Remember me</span>
-                </label>
+            <div class="flex justify-between">
+                <a-form-item name="remember">
+                    <a-checkbox v-model:checked="form.remember"
+                        >Remember me</a-checkbox
+                    >
+                </a-form-item>
+
+                <a-form-item name="forgot">
+                    <Link
+                        :href="route('password.request')"
+                        class="font-semibold"
+                        >Forgot your Password?</Link
+                    >
+                </a-form-item>
             </div>
 
             <div class="flex flex-col gap-2 items-center mt-4">
