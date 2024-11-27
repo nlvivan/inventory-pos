@@ -11,6 +11,8 @@ class ProductReturn extends Model
 {
     use HasFactory, Searchable;
 
+    protected $guarded = [];
+
     protected $searchable = [
         'product.name',
     ];

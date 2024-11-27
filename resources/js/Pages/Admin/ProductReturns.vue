@@ -18,21 +18,16 @@ const props = defineProps({
     filters: Object,
     categories: Array,
     productionBatches: Array,
+    products: Array,
 });
 
 const imageUrl = ref("");
 const fileList = ref([]);
 const form = useForm({
     id: "",
-    image_url: "",
-    category_id: "",
-    production_batch_id: "",
-    name: "",
-    notes: "",
-    price: "",
-    sku: "",
-    expiry_date: "",
-    has_image_url: false,
+    product_id: "",
+    count: "",
+    reason: "",
 });
 
 const handleChange = (info) => {
@@ -62,46 +57,19 @@ function filterOption(input, option) {
 
 const columns = [
     {
-        title: "Image",
-        dataIndex: "image",
-        key: "image",
-        class: "w-32",
-    },
-    {
         title: "Name",
-        dataIndex: "name",
+        dataIndex: ["product", "name"],
         key: "name",
     },
     {
-        title: "Category",
-        dataIndex: ["category", "name"],
-        key: "category",
+        title: "Stock return",
+        dataIndex: "count",
+        key: "count",
     },
     {
-        title: "Batch Number",
-        dataIndex: ["production_batch", "batch_number"],
-        key: "description",
-    },
-    {
-        title: "Stock",
-        dataIndex: "stock",
-        key: "stock",
-    },
-    {
-        title: "Notes",
-        dataIndex: "notes",
-        key: "notes",
-    },
-    {
-        title: "Price",
-        dataIndex: "price",
-        key: "price",
-    },
-    {
-        title: "Action",
-        dataIndex: "action",
-        key: "action",
-        class: "w-1 text-center",
+        title: "Reason",
+        dataIndex: "reason",
+        key: "reason",
     },
 ];
 
@@ -170,11 +138,12 @@ const handleTableChange = (event) => {
 };
 
 const submitForm = () => {
-    if (isEdit.value) {
-        updateData();
-    } else {
-        createData();
-    }
+    form.post(route("product-returns.store"), {
+        onSuccess: () => {
+            closeCreateModal();
+            message.success("Product Return Created Sucessfully!");
+        },
+    });
 };
 
 const createData = () => {
@@ -302,7 +271,7 @@ watchDebounced(
     <AuthenticatedLayout>
         <Head title="Products" />
         <div>
-            <p class="text-2xl font-bold">Products</p>
+            <p class="text-2xl font-bold">Product Returns</p>
             <div class="w-full">
                 <a-card :bordered="false" class="table-container">
                     <div class="flex justify-between table-header-action">
@@ -317,7 +286,7 @@ watchDebounced(
                             type="primary"
                             class="rounded-[5px]"
                             @click="showCreateModal"
-                            >Create Product</a-button
+                            >Return Product</a-button
                         >
                     </div>
 
@@ -395,7 +364,7 @@ watchDebounced(
             <a-modal
                 :maskClosable="true"
                 v-model:open="isCreateModalVisible"
-                :title="isEdit ? 'Update Product' : 'Create Product'"
+                title="Return Product"
                 :footer="false"
                 size="md"
             >
@@ -404,66 +373,27 @@ watchDebounced(
                     :wrapper-col="{ span: 24 }"
                     @submit.prevent="submitForm"
                 >
+                    <div></div>
                     <div>
                         <a-form-item
-                            label="Image"
+                            label="Product"
                             :validate-status="
-                                form.errors.image_url ? 'error' : null
+                                form.errors.product_id ? 'error' : null
                             "
-                            :help="form.errors.image_url"
-                        >
-                            <a-upload
-                                v-model:file-list="fileList"
-                                name="avatar"
-                                list-type="picture-card"
-                                class="avatar-uploader"
-                                :accept="'image/jpeg,image/png,image/jpg'"
-                                :show-upload-list="false"
-                                @change="handleChange"
-                                :before-upload="() => false"
-                            >
-                                <img
-                                    v-if="imageUrl"
-                                    :src="imageUrl"
-                                    alt="avatar"
-                                    class="h-16 w-16 object-contain rounded"
-                                />
-                                <div v-else>
-                                    <LoadingOutlined
-                                        v-if="loading"
-                                    ></LoadingOutlined>
-                                    <PlusOutlined v-else></PlusOutlined>
-                                    <div class="ant-upload-text">Upload</div>
-                                </div>
-                            </a-upload>
-                            <a
-                                v-if="imageUrl"
-                                @click="removeImage"
-                                class="cursor-pointer text-sm"
-                                >Remove Image</a
-                            >
-                        </a-form-item>
-                    </div>
-                    <div>
-                        <a-form-item
-                            label="Category"
-                            :validate-status="
-                                form.errors.category_id ? 'error' : null
-                            "
-                            :help="form.errors.category_id"
+                            :help="form.errors.product_id"
                         >
                             <a-select
                                 ref="select"
                                 show-search
                                 allow-clear
-                                v-model:value="form.category_id"
-                                placeholder="Select Category"
+                                v-model:value="form.product_id"
+                                placeholder="Select Product"
                                 style="width: 100%"
                                 :options="
-                                    props.categories
-                                        ?.map((category) => ({
-                                            value: category.id,
-                                            label: category.name,
+                                    props.products
+                                        ?.map((product) => ({
+                                            value: product.id,
+                                            label: product.name,
                                         }))
                                         .sort((a, b) =>
                                             a.label.localeCompare(b.label)
@@ -473,74 +403,27 @@ watchDebounced(
                             />
                         </a-form-item>
                         <a-form-item
-                            label="Production Batch Number"
+                            label="Stock Count"
                             :validate-status="
-                                form.errors.production_batch_id ? 'error' : null
+                                form.errors.count ? 'error' : null
                             "
-                            :help="form.errors.production_batch_id"
-                        >
-                            <a-select
-                                ref="select"
-                                show-search
-                                allow-clear
-                                v-model:value="form.production_batch_id"
-                                placeholder="Select Bacth Number"
-                                style="width: 100%"
-                                :options="
-                                    props.productionBatches
-                                        ?.map((productionBatch) => ({
-                                            value: productionBatch.id,
-                                            label: `${productionBatch.batch_number} (${productionBatch.production_date})`,
-                                        }))
-                                        .sort((a, b) =>
-                                            a.label.localeCompare(b.label)
-                                        )
-                                "
-                                :filter-option="filterOption"
-                            />
-                        </a-form-item>
-                        <a-form-item
-                            label="Name"
-                            :validate-status="form.errors.name ? 'error' : null"
-                            :help="form.errors.name"
-                        >
-                            <a-input v-model:value="form.name" />
-                        </a-form-item>
-                        <a-form-item label="Notes">
-                            <a-textarea v-model:value="form.notes"></a-textarea>
-                        </a-form-item>
-                        <a-form-item
-                            label="SKU"
-                            :validate-status="form.errors.sku ? 'error' : null"
-                            :help="form.errors.sku"
-                        >
-                            <a-input v-model:value="form.sku" />
-                        </a-form-item>
-                        <a-form-item
-                            label="Price"
-                            :validate-status="
-                                form.errors.price ? 'error' : null
-                            "
-                            :help="form.errors.price"
+                            :help="form.errors.count"
                         >
                             <a-input-number
-                                style="width: 100%"
-                                v-model:value="form.price"
-                                :min="0"
+                                v-model:value="form.count"
+                                class="w-full"
                             />
                         </a-form-item>
                         <a-form-item
-                            label="Expiry Date"
+                            label="Reason"
                             :validate-status="
-                                form.errors.expiry_date ? 'error' : null
+                                form.errors.reason ? 'error' : null
                             "
-                            :help="form.errors.expiry_date"
+                            :help="form.errors.reason"
                         >
-                            <a-date-picker
-                                v-model:value="expiryDate"
-                                placeholder="Expiry Date"
-                                @change="handleChangeDate"
-                                style="width: 100%"
+                            <a-textarea
+                                v-model:value="form.reason"
+                                class="w-full"
                             />
                         </a-form-item>
                     </div>

@@ -60,11 +60,11 @@ const menus = [
         path: route("stocks.index"),
         icon: IconCategory,
     },
-    // {
-    //     label: "Product Returns",
-    //     path: route("product-returns.index"),
-    //     icon: IconCategory,
-    // },
+    {
+        label: "Product Returns",
+        path: route("product-returns.index"),
+        icon: IconCategory,
+    },
     {
         label: "Users",
         path: route("users.index"),
