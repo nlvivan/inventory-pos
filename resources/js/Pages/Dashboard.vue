@@ -68,12 +68,12 @@ const productNearlyOutOfStockColumns = [
 
 const columns = [
     {
-        title: "Product",
+        title: "Products",
         dataIndex: ["product", "name"],
         key: "product",
     },
     {
-        title: "Sold Out",
+        title: "Sold Products",
         dataIndex: "total_quantity",
         key: "quantity",
     },

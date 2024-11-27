@@ -48,17 +48,6 @@ const email = ref("");
             <p class="text-4xl font-bold text-[#1C486F]">Your One Stop Shop</p>
             <p class="text-4xl font-bold text-[#1C486F]">Grocery Store</p>
             <p class="text-lg text-[#838383]"></p>
-            <a-input-search
-                v-model:value="value"
-                placeholder="Enter your email address"
-                class="w-1/4"
-                size="large"
-                @search="onSearch"
-            >
-                <template #enterButton>
-                    <a-button type="primary">Subscribe</a-button>
-                </template>
-            </a-input-search>
         </div>
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-4 mt-4">
             <p class="text-2xl font-semibold text-[#1C486F]">

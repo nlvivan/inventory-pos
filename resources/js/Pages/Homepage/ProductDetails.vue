@@ -40,6 +40,7 @@ const submitProduct = () => {
                         border-style: solid;
                         border-color: #adadad40;
                         border-width: 1px;
+                        overflow: hidden; /* Prevents any overflow from the image */
                     "
                 >
                     <img
@@ -47,8 +48,14 @@ const submitProduct = () => {
                             props.product.data?.image_url ??
                             '/storage/IMG_4359.jpg'
                         "
+                        style="
+                            max-width: 100%; /* Ensures the image never exceeds the width of the container */
+                            max-height: 100%; /* Ensures the image never exceeds the height of the container */
+                            object-fit: contain; /* Ensures the image maintains its aspect ratio while fitting within the container */
+                        "
                     />
                 </div>
+
                 <div class="p-4">
                     <p class="font-semibold">{{ props.product.data?.name }}</p>
                     <div>
