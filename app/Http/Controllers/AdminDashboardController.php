@@ -33,7 +33,10 @@ class AdminDashboardController extends Controller
                 $query->where('status', 'paid');
             })
             ->when($request->from && $request->to, function ($query) use ($request) {
-                $query->whereBetween('created_at', [$request->from, $request->to]);
+                $query->where(function ($query) use ($request) {
+                    $query->where('created_at', '>=', $request->from)
+                        ->orWhere('created_at', '<=', $request->to);
+                });
             })
             ->with('product')
             ->selectRaw('SUM(quantity) as total_quantity, SUM(total_price) as total_price,  product_id')
