@@ -38,11 +38,12 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make('password'),
+            'email_verified_at' => now(),
         ]);
 
         $user->assignRole($request->role);
 
-        $user->notify(new SendCredsToUserNotification());
+        $user->notify(new SendCredsToUserNotification);
 
         return redirect()->back();
     }
