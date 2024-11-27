@@ -75,7 +75,7 @@ Route::middleware('auth')->group(function () {
 
     });
 
-    Route::group(['middleware' => ['role:admin|cashier|customer', 'verified']], function () {
+    Route::group(['middleware' => ['role:admin|cashier|customer']], function () {
         Route::get('products/{product}/view-details', [HomepageController::class, 'productDetails'])->name('home.product.details');
         Route::get('/carts', [CartController::class, 'index'])->name('cart.index');
         Route::post('/carts', [CartController::class, 'store'])->name('cart.store');
