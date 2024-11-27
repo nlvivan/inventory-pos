@@ -21,12 +21,14 @@ class UserAndRoleSeeder extends Seeder
             'name' => 'admin',
             'email' => 'admin@admin.com',
             'password' => bcrypt('password'),
+            'email_verified_at' => now(),
         ])->assignRole('admin');
 
         User::firstOrCreate([
             'name' => 'cashier',
             'email' => 'cashier@gmail.com',
             'password' => bcrypt('password'),
+            'email_verified_at' => now(),
         ])->assignRole('cashier');
     }
 }
