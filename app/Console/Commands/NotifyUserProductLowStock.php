@@ -33,7 +33,7 @@ class NotifyUserProductLowStock extends Command
         Product::query()
             ->each(function (Product $product) use ($users) {
 
-                if ($product->stock->stock <= $product->stock->critical_stock) {
+                if ($product?->stock?->stock <= $product?->stock?->critical_stock) {
 
                     $users->each(function (User $user) use ($product) {
                         $data = [
