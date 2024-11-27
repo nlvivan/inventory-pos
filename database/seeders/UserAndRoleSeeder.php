@@ -27,6 +27,6 @@ class UserAndRoleSeeder extends Seeder
             'name' => 'cashier',
             'email' => 'cashier@gmail.com',
             'password' => bcrypt('password'),
-        ])->assignRole('admin');
+        ])->assignRole('cashier');
     }
 }
