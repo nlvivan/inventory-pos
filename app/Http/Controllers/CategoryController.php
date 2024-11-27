@@ -13,9 +13,13 @@ class CategoryController extends Controller
 {
     public function index(Request $request)
     {
+        $request->mergeIfMissing([
+            'per_page' => 15,
+        ]);
+
         $categories = Category::query()
             ->search($request->search)
-            ->paginate();
+            ->paginate($request->per_page);
 
         return Inertia::render('Admin/Categories', [
             'records' => CategoryResource::collection($categories),

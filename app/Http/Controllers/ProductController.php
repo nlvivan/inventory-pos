@@ -15,10 +15,14 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
+        $request->mergeIfMissing([
+            'per_page' => 15,
+        ]);
+
         $products = Product::query()
             ->with(['category', 'productionBatch', 'stock'])
             ->search($request->search)
-            ->paginate();
+            ->paginate($request->per_page);
 
         $categories = Category::query()->get(['id', 'name']);
         $productionBatches = ProductionBatch::query()->get(['id', 'batch_number', 'production_date']);

@@ -11,10 +11,14 @@ class StockController extends Controller
 {
     public function index(Request $request)
     {
+        $request->mergeIfMissing([
+            'per_page' => 15,
+        ]);
+
         $products = Stock::query()
             ->with(['product'])
             ->search($request->search)
-            ->paginate();
+            ->paginate($request->per_page);
 
         return Inertia::render('Admin/Stocks', [
             'records' => StockResource::collection($products),

@@ -12,10 +12,14 @@ class ProductReturnController extends Controller
 {
     public function index(Request $request)
     {
+        $request->mergeIfMissing([
+            'per_page' => 15,
+        ]);
+
         $productReturns = ProductReturn::query()
             ->with(['product'])
             ->search($request->search)
-            ->paginate();
+            ->paginate($request->per_page);
 
         $products = Product::query()
             ->get(['id', 'name']);

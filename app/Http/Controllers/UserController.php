@@ -13,12 +13,16 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
+        $request->mergeIfMissing([
+            'per_page' => 15,
+        ]);
+
         $records = User::query()
             ->search($request->search)
             ->with(['roles'])
             ->role(['cashier', 'customer'])
             ->latest()
-            ->paginate();
+            ->paginate($request->per_page);
 
         return Inertia::render('Admin/Users', [
             'records' => $records,

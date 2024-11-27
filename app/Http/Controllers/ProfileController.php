@@ -68,12 +68,16 @@ class ProfileController extends Controller
 
     public function orders(Request $request)
     {
+        $request->mergeIfMissing([
+            'per_page' => 15,
+        ]);
+
         $orders = Order::query()
             ->search($request->search5)
             ->with(['orderItems', 'orderItems.product'])
             ->where('customer_id', Auth::user()->id)
             ->latest()
-            ->paginate();
+            ->paginate($request->per_page);
 
         return Inertia::render('Customer/Orders', [
             'orders' => $orders,
