@@ -5,6 +5,9 @@ import InputLabel from "@/Components/InputLabel.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
 import { Head, Link, useForm } from "@inertiajs/vue3";
+import { useReCaptcha } from "vue-recaptcha-v3";
+
+const { executeRecaptcha, recaptchaLoaded } = useReCaptcha();
 
 const form = useForm({
     first_name: "",
@@ -13,7 +16,14 @@ const form = useForm({
     email: "",
     password: "",
     password_confirmation: "",
+    captcha_token: null,
 });
+
+const recaptcha = async () => {
+    await recaptchaLoaded();
+    form.captcha_token = await executeRecaptcha("register");
+    submit();
+};
 
 const submit = () => {
     form.post(route("register"), {
@@ -33,7 +43,7 @@ const submit = () => {
             </p>
         </div>
 
-        <a-form name="basic" layout="vertical" @submit.prevent="submit">
+        <a-form name="basic" layout="vertical" @submit.prevent="recaptcha">
             <div>
                 <a-form-item
                     :validate-status="form.errors.first_name ? 'error' : null"
