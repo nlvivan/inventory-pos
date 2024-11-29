@@ -43,7 +43,7 @@ const submit = () => {
             </p>
         </div>
 
-        <a-form name="basic" layout="vertical" @submit.prevent="submit">
+        <a-form name="basic" layout="vertical" @submit.prevent="recaptcha">
             <div>
                 <a-form-item
                     :validate-status="form.errors.first_name ? 'error' : null"
