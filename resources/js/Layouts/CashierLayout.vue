@@ -241,7 +241,7 @@
 
 <script setup>
 import { computed, ref } from "vue";
-import { usePage } from "@inertiajs/vue3";
+import { usePage, router } from "@inertiajs/vue3";
 import {
     Disclosure,
     DisclosureButton,
