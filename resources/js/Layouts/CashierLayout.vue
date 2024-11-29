@@ -165,6 +165,7 @@
                                 </div>
                                 <div
                                     class="text-sm text-amber-500 cursor-pointer"
+                                    @click="handleMarkAsRead(notification.id)"
                                 >
                                     Mark as Read
                                 </div>
@@ -190,6 +191,7 @@
                                 </div>
                                 <div
                                     class="text-sm text-amber-500 cursor-pointer"
+                                    @click="handleMarkAsRead(notification.id)"
                                 >
                                     Mark as Read
                                 </div>
@@ -224,6 +226,7 @@
                                 </Link>
                                 <div
                                     class="text-sm text-amber-500 cursor-pointer"
+                                    @click="handleMarkAsRead(notification.id)"
                                 >
                                     Mark as Read
                                 </div>
@@ -279,4 +282,8 @@ const userNavigation = [
     { name: "Settings", href: "#", method: "get" },
     { name: "Sign out", href: route("logout"), method: "post" },
 ];
+
+const handleMarkAsRead = (id) => {
+    router.post(route("notifications.markAsRead", id));
+};
 </script>
