@@ -20,6 +20,12 @@ import {
     IconMap,
     IconUsersGroup,
     IconCategory,
+    IconCategory2,
+    IconBox,
+    IconArchive,
+    IconStack2,
+    IconSTurnRight,
+    IconUsers,
 } from "@tabler/icons-vue";
 
 const collapsed = ref(false);
@@ -48,27 +54,27 @@ const menus = [
     {
         label: "Products",
         path: route("products.index"),
-        icon: IconCategory,
+        icon: IconBox,
     },
     {
         label: "Archive Products",
         path: route("products.archive"),
-        icon: IconCategory,
+        icon: IconArchive,
     },
     {
         label: "Stocks",
         path: route("stocks.index"),
-        icon: IconCategory,
+        icon: IconStack2,
     },
     {
         label: "Product Returns",
         path: route("product-returns.index"),
-        icon: IconCategory,
+        icon: IconSTurnRight,
     },
     {
         label: "Users",
         path: route("users.index"),
-        icon: IconCategory,
+        icon: IconUsers,
     },
 ];
 
