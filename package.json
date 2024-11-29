@@ -25,6 +25,7 @@
         "ant-design-vue": "^4.0.1",
         "apexcharts": "^3.51.0",
         "dayjs": "^1.11.10",
+        "vue-recaptcha-v3": "^2.0.1",
         "vue3-apexcharts": "^1.5.3",
         "vue3-carousel": "^0.3.3"
     }

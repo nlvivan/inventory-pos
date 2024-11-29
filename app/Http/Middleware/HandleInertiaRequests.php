@@ -32,6 +32,7 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
+            'recaptcha_site_key' => config('recaptcha.site_key'),
             'auth' => [
                 'user' => $request->user(),
                 'cartCount' => $request->user() ? auth()->user()?->carts->count() : 0,
