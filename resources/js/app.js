@@ -7,6 +7,8 @@ import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { ZiggyVue } from "../../vendor/tightenco/ziggy/dist/vue.m";
 import AntDesignVue from "ant-design-vue";
 import "ant-design-vue/dist/reset.css";
+import { VueReCaptcha, useReCaptcha } from "vue-recaptcha-v3";
+
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 
 createInertiaApp({
@@ -20,6 +22,9 @@ createInertiaApp({
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue, Ziggy)
+            .use(VueReCaptcha, {
+                siteKey: "6LdNPY0qAAAAAAOcsMF1rG3ygC6kh8bhDupz6G8Z",
+            })
             .use(AntDesignVue)
             .component("Link", Link)
             .mount(el);
