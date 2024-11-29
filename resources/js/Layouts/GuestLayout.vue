@@ -14,15 +14,13 @@ import { Link } from "@inertiajs/vue3";
         <div
             class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-white"
         >
-            <div class="absolute top-6">
+            <div class="top-6">
                 <Link href="/">
                     <img src="/assets/login_logo.png" class="w-[212px]" />
                 </Link>
             </div>
 
-            <div
-                class="w-full sm:max-w-md mt-6 px-6 overflow-hidden sm:rounded-lg"
-            >
+            <div class="w-full sm:max-w-md px-6 overflow-hidden sm:rounded-lg">
                 <slot />
             </div>
         </div>

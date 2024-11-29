@@ -36,7 +36,7 @@ const submit = () => {
     <GuestLayout>
         <Head title="Register" />
 
-        <div class="w-full flex flex-col justify-center items-center mt-40">
+        <div class="w-full flex flex-col justify-center items-center">
             <p class="font-bold text-3xl text-[#1C486F]">Create your Account</p>
             <p class="text-[#ADADAD] font-semibold">
                 Begin your grocery journey now!
