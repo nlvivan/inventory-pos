@@ -298,6 +298,7 @@ const placeOrder = () => {
                     </table>
 
                     <a-button
+                        :disabled="props.records.data.length === 0"
                         type="primary"
                         block
                         size="large"

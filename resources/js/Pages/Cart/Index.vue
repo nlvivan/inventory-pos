@@ -198,6 +198,7 @@ const removeCart = (record) => {
                             </Link>
 
                             <a-button
+                                :disabled="props.records.data.length === 0"
                                 type="primary"
                                 size="large"
                                 @click="updateCarts"
@@ -251,7 +252,11 @@ const removeCart = (record) => {
                     </table>
 
                     <Link :href="route('checkout.index')" class="">
-                        <a-button type="primary" block size="large"
+                        <a-button
+                            type="primary"
+                            block
+                            size="large"
+                            :disabled="props.records.data.length === 0"
                             >Proceed to Checkout</a-button
                         >
                     </Link>
