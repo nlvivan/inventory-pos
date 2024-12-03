@@ -51,10 +51,15 @@ class AdminDashboardController extends Controller
         $startOfMonth = date('Y-m-01');
         $endOfMonth = date('Y-m-t');
 
-        $nearlyExpiredProducts = Product::whereBetween('expiry_date', [$startOfMonth, $endOfMonth])->get();
+        $nearlyExpiredProducts = Product::query()
+            ->with('productionBatch')
+            ->whereHas('productionBatch', function ($query) use ($startOfMonth, $endOfMonth) {
+                $query->whereBetween('expiration_date', [$startOfMonth, $endOfMonth]);
+            })
+            ->get();
 
         $productNearlyOutOfStock = Stock::query()
-            ->with('product')
+            ->with(['product', 'product.productionBatch'])
             ->whereNotNull('stock')
             ->whereNotNull('critical_stock')
             ->whereColumn('stock', '<', 'critical_stock')

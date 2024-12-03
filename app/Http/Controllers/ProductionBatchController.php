@@ -27,6 +27,7 @@ class ProductionBatchController extends Controller
         $data = $request->validate([
             'batch_number' => 'required|unique:production_batches,batch_number',
             'production_date' => 'required|date',
+            'expiration_date' => 'required|date',
         ]);
 
         ProductionBatch::create($data);
@@ -39,6 +40,7 @@ class ProductionBatchController extends Controller
         $data = $request->validate([
             'batch_number' => ['required', Rule::unique('production_batches', 'batch_number')->ignore($productionBatch->id)],
             'production_date' => ['required', 'date'],
+            'expiration_date' => ['required', 'date'],
         ]);
 
         $productionBatch->update($data);

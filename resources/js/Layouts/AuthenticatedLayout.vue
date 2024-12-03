@@ -26,6 +26,7 @@ import {
     IconStack2,
     IconSTurnRight,
     IconUsers,
+    IconBarcode,
 } from "@tabler/icons-vue";
 
 const collapsed = ref(false);
@@ -41,11 +42,11 @@ const menus = [
         path: route("admin.dashboard"),
         icon: IconDashboard,
     },
-    // {
-    //     label: "Production Batches",
-    //     path: route("production-batches.index"),
-    //     icon: IconDashboard,
-    // },
+    {
+        label: "Production Batches",
+        path: route("production-batches.index"),
+        icon: IconBarcode,
+    },
     {
         label: "Categories",
         path: route("categories.index"),
@@ -354,6 +355,10 @@ const handleMarkAsRead = (id) => {
                                         is nearly to expire
                                     </div>
                                     <div class="text-sm text-gray-500">
+                                        Batch Number:
+                                        {{ notification.data.batch_number }}
+                                    </div>
+                                    <div class="text-sm text-gray-500">
                                         Expiry Date:
                                         {{ notification.data.expiry_date }}
                                     </div>
@@ -380,6 +385,10 @@ const handleMarkAsRead = (id) => {
                                     <div class="font-medium text-gray-500">
                                         {{ notification.data.product_name }}
                                         is nearly out of stock
+                                    </div>
+                                    <div class="text-sm text-gray-500">
+                                        Batch Number:
+                                        {{ notification.data.batch_number }}
                                     </div>
                                     <div class="text-sm text-gray-500">
                                         Remaining Stock:
