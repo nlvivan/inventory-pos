@@ -25,7 +25,7 @@ class AdminDashboardController extends Controller
             ->when($request->from && $request->to, function ($query) use ($request) {
                 $query->where(function ($query) use ($request) {
                     $query->where('created_at', '>=', $request->from)
-                        ->orWhere('created_at', '<=', $request->to);
+                        ->where('created_at', '<=', $request->to);
                 });
             })
             ->where('status', 'paid')
@@ -38,7 +38,7 @@ class AdminDashboardController extends Controller
             ->when($request->from && $request->to, function ($query) use ($request) {
                 $query->where(function ($query) use ($request) {
                     $query->where('created_at', '>=', $request->from)
-                        ->orWhere('created_at', '<=', $request->to);
+                        ->where('created_at', '<=', $request->to);
                 });
             })
             ->with('product')
