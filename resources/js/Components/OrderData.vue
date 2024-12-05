@@ -62,7 +62,7 @@ async function getData(filterBy = "last_7") {
         series.value = [
             {
                 name: "Sales",
-                data: salesTotal.value.map((arr) => arr.total),
+                data: salesTotal.value.map((arr) => arr.total.toFixed(2)),
             },
         ];
 
@@ -147,8 +147,6 @@ const setCategories = (salesData, filterBy) => {
         return;
     }
     if (filterBy == "last_year") {
-        const { category, salesGraphData } = last_year(salesData, userTimezone);
-        console.log(salesGraphData);
         categories.value = category;
         salesTotal.value = salesGraphData;
         tickAmount.value = 12;
