@@ -54,16 +54,16 @@ const userNavigation = [
             <div
                 class="py-4 mx-auto max-w-7xl px-4 sm:px-6 lg:px-4 flex justify-around items-baseline"
             >
-                <a href="#explore_categories">
+                <Link :href="`${route('home.index')}#explore_categories`">
                     <a-button type="primary">
                         <template #icon>
                             <AppstoreOutlined />
                         </template>
                         Browse All Categories
                     </a-button>
-                </a>
+                </Link>
                 <div class="flex gap-2">
-                    <Link :href="route('home.index')">
+                    <Link :href="`${route('home.index')}`">
                         <a-button
                             type="link"
                             class="text-[#1C486F] font-semibold"
@@ -96,7 +96,7 @@ const userNavigation = [
                             Promotions
                         </a-button>
                     </Link>
-                    <a href="#new_products">
+                    <Link :href="`${route('home.index')}#new_products`">
                         <a-button
                             type="link"
                             class="text-[#1C486F] font-semibold"
@@ -106,7 +106,7 @@ const userNavigation = [
                             </template>
                             New Products
                         </a-button>
-                    </a>
+                    </Link>
                 </div>
                 <div>
                     <p class="text-md text-[#1C486F] font-semibold">
