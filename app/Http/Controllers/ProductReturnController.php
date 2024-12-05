@@ -17,7 +17,7 @@ class ProductReturnController extends Controller
         ]);
 
         $productReturns = ProductReturn::query()
-            ->with(['product'])
+            ->with(['product', 'product.productionBatch'])
             ->search($request->search)
             ->paginate($request->per_page);
 

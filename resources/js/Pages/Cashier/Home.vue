@@ -3,7 +3,11 @@ import CashierLayout from "@/Layouts/CashierLayout.vue";
 import { Head, useForm, router, usePage } from "@inertiajs/vue3";
 import { ref, reactive, computed } from "vue";
 import { watchDebounced } from "@vueuse/core";
-import { DeleteOutlined, EyeOutlined } from "@ant-design/icons-vue";
+import {
+    DeleteOutlined,
+    EyeOutlined,
+    RollbackOutlined,
+} from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
 import { useFormatDate } from "@/Composables/useFormatDate";
 const { formatDate } = useFormatDate();
@@ -78,6 +82,22 @@ const handleTableChange = (event) => {
         }
     );
 };
+
+const cancel = () => {};
+
+const confirm = (record) => {
+    router.post(
+        route("cashier.orders.cancel", record.id),
+        {},
+        {
+            preserveScroll: true,
+            preserveState: false,
+            onSuccess: () => {
+                message.success("Order Cancelled");
+            },
+        }
+    );
+};
 </script>
 <template>
     <CashierLayout>
@@ -132,21 +152,51 @@ const handleTableChange = (event) => {
                             >
                             <a-tag
                                 color="red"
+                                v-if="record.status === 'cancelled'"
+                                >{{ record.status }}</a-tag
+                            >
+                            <a-tag
+                                color="red"
                                 v-if="record.status === 'failed'"
                                 >{{ record.status }}</a-tag
                             >
                         </template>
                         <template v-if="column.dataIndex === 'action'">
-                            <Link
-                                :href="route('cashier.orders.show', record.id)"
-                            >
-                                <a-button type="primary" class="rounded-full">
-                                    <template #icon>
-                                        <EyeOutlined />
-                                    </template>
-                                    View
-                                </a-button>
-                            </Link>
+                            <div class="flex gap-2">
+                                <Link
+                                    :href="
+                                        route('cashier.orders.show', record.id)
+                                    "
+                                >
+                                    <a-button
+                                        type="primary"
+                                        class="rounded-full"
+                                    >
+                                        <template #icon>
+                                            <EyeOutlined />
+                                        </template>
+                                        View
+                                    </a-button>
+                                </Link>
+                                <a-popconfirm
+                                    v-if="record.status === 'for-pick-up'"
+                                    title="Are you sure you want to cancel order?"
+                                    ok-text="Yes"
+                                    cancel-text="No"
+                                    @confirm="confirm(record)"
+                                    @cancel="cancel"
+                                >
+                                    <a-button
+                                        type="primary"
+                                        class="rounded-full"
+                                    >
+                                        <template #icon>
+                                            <RollbackOutlined />
+                                        </template>
+                                        Cancel
+                                    </a-button>
+                                </a-popconfirm>
+                            </div>
                         </template>
                     </template>
                 </a-table>

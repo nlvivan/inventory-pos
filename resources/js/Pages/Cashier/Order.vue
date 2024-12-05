@@ -73,7 +73,10 @@ const handleCancelPayment = () => {
                     <p class="text-2xl text-[#1C486F] font-bold">
                         Order Details - {{ props.record.order_number }}
                     </p>
-                    <div class="flex gap-2">
+                    <div
+                        class="flex gap-2"
+                        v-if="props.record.status !== 'cancelled'"
+                    >
                         <button
                             @click="openPayOrderModal = true"
                             v-if="props.record.status !== 'paid'"

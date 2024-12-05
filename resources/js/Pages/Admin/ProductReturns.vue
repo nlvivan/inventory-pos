@@ -62,6 +62,11 @@ const columns = [
         key: "name",
     },
     {
+        title: "Batch Number",
+        dataIndex: ["product", "production_batch", "batch_number"],
+        key: "bacth_number",
+    },
+    {
         title: "Stock return",
         dataIndex: "count",
         key: "count",

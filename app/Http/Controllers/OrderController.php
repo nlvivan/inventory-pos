@@ -6,6 +6,7 @@ use App\Http\Resources\ProductResource;
 use App\Models\Order;
 use App\Models\OrderItems;
 use App\Models\Product;
+use App\Models\Stock;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -187,6 +188,19 @@ class OrderController extends Controller
             'status' => 'paid',
             'change_amount' => $request->cash - $order->total_amount,
             'employee_id' => auth()->user()->id,
+        ]);
+
+        return redirect()->back();
+    }
+
+    public function cancelOrder(Request $request, Order $order)
+    {
+        OrderItems::where('order_id', $order->id)->each(function ($item) {
+            Stock::where('product_id', $item->product_id)->increment('stock', $item->quantity);
+        });
+
+        $order->update([
+            'status' => 'cancelled',
         ]);
 
         return redirect()->back();

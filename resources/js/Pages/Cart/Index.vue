@@ -109,6 +109,9 @@ const removeCart = (record) => {
                                                 alt="category image"
                                             />
                                         </div>
+                                        <p class="mt-2 ml-4 font-semibold">
+                                            {{ record.product.name }}
+                                        </p>
                                     </td>
                                     <td class="py-2 px-4 text-left">
                                         ₱ {{ record.product.price }}

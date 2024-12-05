@@ -10,8 +10,9 @@ export default {
 import { ref } from "vue";
 import { Head, useForm, router, usePage } from "@inertiajs/vue3";
 import { useFormatDate } from "@/Composables/useFormatDate";
-import { EyeOutlined } from "@ant-design/icons-vue";
+import { EyeOutlined, RollbackOutlined } from "@ant-design/icons-vue";
 import { watchDebounced } from "@vueuse/core";
+import { notification } from "ant-design-vue";
 const { formatDate } = useFormatDate();
 
 const props = defineProps({
@@ -91,6 +92,25 @@ watchDebounced(
     },
     { debounce: 300 }
 );
+
+const cancel = () => {};
+
+const confirm = (record) => {
+    router.post(
+        route("customer.orders.cancel", record.id),
+        {},
+        {
+            preserveScroll: true,
+            preserveState: false,
+            onSuccess: () => {
+                notification.success({
+                    message: "Order Cancelled",
+                    description: "Your order has been cancelled.",
+                });
+            },
+        }
+    );
+};
 </script>
 
 <template>
@@ -122,14 +142,35 @@ watchDebounced(
                         {{ formatDate(record.created_at) }}
                     </template>
                     <template v-if="column.dataIndex === 'action'">
-                        <Link :href="route('customer.orders.show', record.id)">
-                            <a-button type="primary" class="rounded-full">
-                                <template #icon>
-                                    <EyeOutlined />
-                                </template>
-                                View
-                            </a-button>
-                        </Link>
+                        <div
+                            class="flex gap-2"
+                            v-if="record.status !== 'cancelled'"
+                        >
+                            <Link
+                                :href="route('customer.orders.show', record.id)"
+                            >
+                                <a-button type="primary" class="rounded-full">
+                                    <template #icon>
+                                        <EyeOutlined />
+                                    </template>
+                                    View
+                                </a-button>
+                            </Link>
+                            <a-popconfirm
+                                title="Are you sure you want to cancel your order?"
+                                ok-text="Yes"
+                                cancel-text="No"
+                                @confirm="confirm(record)"
+                                @cancel="cancel"
+                            >
+                                <a-button type="primary" class="rounded-full">
+                                    <template #icon>
+                                        <RollbackOutlined />
+                                    </template>
+                                    Cancel
+                                </a-button>
+                            </a-popconfirm>
+                        </div>
                     </template>
                 </template>
             </a-table>

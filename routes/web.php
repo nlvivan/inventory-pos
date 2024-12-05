@@ -71,6 +71,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/orders/{order}/invoice/pdf', [OrderController::class, 'showInvoice'])->name('cashier.orders.invoice.pdf');
             Route::get('/home', [OrderController::class, 'home'])->name('cashier.orders.home');
             Route::post('/orders/{order}/pay', [OrderController::class, 'payOrder'])->name('cashier.orders.pay');
+            Route::post('/orders/{order}/cancel', [OrderController::class, 'cancelOrder'])->name('cashier.orders.cancel');
         });
 
     });
@@ -86,6 +87,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/place-order', [CheckoutController::class, 'placeOrder'])->name('checkout.placeOrder');
         Route::get('/checkout/success-page', [CheckoutController::class, 'successPage'])->name('checkout.successPage');
         Route::get('/customer/orders', [ProfileController::class, 'orders'])->name('customer.orders');
+        Route::post('/customer/orders/{order}/cancel', [OrderController::class, 'cancelOrder'])->name('customer.orders.cancel');
         Route::get('/customer/orders/{order}', [ProfileController::class, 'showOrder'])->name('customer.orders.show');
         Route::get('/customer/orders/{order}/invoice', [ProfileController::class, 'showInvoice'])->name('customer.orders.invoice');
         Route::get('/customer/profile', [ProfileController::class, 'edit'])->name('customer.profile.edit');
