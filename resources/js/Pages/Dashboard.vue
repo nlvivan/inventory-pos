@@ -173,9 +173,13 @@ function handleChangeFilter() {
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <a-card title="Total Sales" class="mt-2">
-                            <h1 class="text-2xl font-semibold text-center">
-                                ₱ {{ props.totalSales }}
-                            </h1>
+                            <div
+                                class="flex justify-center items-center text-center w-full h-40"
+                            >
+                                <h1 class="text-2xl font-semibold">
+                                    ₱ {{ props.totalSales }}
+                                </h1>
+                            </div>
                         </a-card>
                         <a-card title="Product Top Sales" class="mt-2">
                             <a-table
