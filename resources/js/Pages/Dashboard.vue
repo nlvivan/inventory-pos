@@ -44,10 +44,14 @@ const nearlyExpiredProductsColumns = [
         dataIndex: "name",
         key: "name",
     },
-
+    {
+        title: "Batch Number",
+        dataIndex: ["production_batch", "batch_number"],
+        key: "expiry_date",
+    },
     {
         title: "Expiry Date",
-        dataIndex: "expiry_date",
+        dataIndex: ["production_batch", "expiration_date"],
         key: "expiry_date",
     },
 ];
@@ -58,7 +62,11 @@ const productNearlyOutOfStockColumns = [
         dataIndex: ["product", "name"],
         key: "name",
     },
-
+    {
+        title: "Batch Number",
+        dataIndex: ["product", "production_batch", "batch_number"],
+        key: "name",
+    },
     {
         title: "Stock",
         dataIndex: "stock",

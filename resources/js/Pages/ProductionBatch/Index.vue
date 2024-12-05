@@ -16,6 +16,7 @@ const props = defineProps({
 const form = useForm({
     batch_number: "",
     production_date: "",
+    expiration_date: "",
 });
 
 const columns = [
@@ -28,6 +29,11 @@ const columns = [
         title: "Production Date",
         dataIndex: "production_date",
         key: "production_date",
+    },
+    {
+        title: "Expiration Date",
+        dataIndex: "expiration_date",
+        key: "expiration_date",
     },
     {
         title: "Action",
@@ -145,6 +151,7 @@ const deleteData = () => {
 };
 
 const productionDate = ref(null);
+const expirationDate = ref(null);
 
 const editData = (data) => {
     form.errors = {};
@@ -157,10 +164,15 @@ const editData = (data) => {
     }
 
     productionDate.value = dayjs(data.production_date);
+    expirationDate.value = dayjs(data.expiration_date);
 };
 
 const handleChangeDate = (value, dateString) => {
     form.production_date = value.format("YYYY-MM-DD HH:mm");
+};
+
+const handleChangeExpirationDate = (value, dateString) => {
+    form.expiration_date = value.format("YYYY-MM-DD HH:mm");
 };
 
 watchDebounced(
@@ -288,9 +300,23 @@ watchDebounced(
                             :help="form.errors.production_date"
                         >
                             <a-date-picker
-                                v-model:value="productionDate"
+                                v-model:value="expirationDate"
                                 placeholder="Production Date"
                                 @change="handleChangeDate"
+                                style="width: 100%"
+                            />
+                        </a-form-item>
+                        <a-form-item
+                            label="Expiration Date"
+                            :validate-status="
+                                form.errors.expiration_date ? 'error' : null
+                            "
+                            :help="form.errors.expiration_date"
+                        >
+                            <a-date-picker
+                                v-model:value="productionDate"
+                                placeholder="Production Date"
+                                @change="handleChangeExpirationDate"
                                 style="width: 100%"
                             />
                         </a-form-item>

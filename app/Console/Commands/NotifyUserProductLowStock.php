@@ -37,6 +37,7 @@ class NotifyUserProductLowStock extends Command
 
                     $users->each(function (User $user) use ($product) {
                         $data = [
+                            'batch_number' => $product?->productionBatch?->batch_number,
                             'product_name' => $product->name,
                             'product_id' => $product->id,
                             'remaining_stock' => $product?->stock?->stock,

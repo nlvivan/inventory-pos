@@ -21,35 +21,44 @@ class NotifyUserForExpiryDateCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Notify users when a product’s production batch is nearing its expiration date';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
+        // Fetch users with the 'admin' role
         $users = User::role(['admin'])->get();
 
-        Product::query()
+        $startOfMonth = date('Y-m-01');
+        $endOfMonth = date('Y-m-t');
+
+        $nearlyExpiredProducts = Product::query()
+            ->with('productionBatch')
+            ->whereHas('productionBatch', function ($query) use ($startOfMonth, $endOfMonth) {
+                $query->whereBetween('expiration_date', [$startOfMonth, $endOfMonth]);
+            })
             ->each(function (Product $product) use ($users) {
 
-                if ($product->expiry_date <= now()->addWeek()) {
+                logger($product->productionBatch);
 
-                    $users->each(function (User $user) use ($product) {
-                        $data = [
-                            'product_name' => $product->name,
-                            'product_id' => $product->id,
-                            'expiry_date' => $product->expiry_date,
-                        ];
+                $users->each(function (User $user) use ($product) {
+                    $data = [
+                        'batch_number' => $product->productionBatch->batch_number,
+                        'product_name' => $product->name,
+                        'product_id' => $product->id,
+                        'expiry_date' => $product->productionBatch->expiration_date,
+                    ];
 
-                        Notification::create([
-                            'type' => 'expiry_date',
-                            'user_id' => $user->id,
-                            'data' => $data,
-                            'read' => false,
-                        ]);
-                    });
-                }
+                    // Create a notification for each admin
+                    Notification::create([
+                        'type' => 'expiry_date',
+                        'user_id' => $user->id,
+                        'data' => $data,
+                        'read' => false,
+                    ]);
+                });
             });
     }
 }

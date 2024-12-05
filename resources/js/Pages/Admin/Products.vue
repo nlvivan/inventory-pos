@@ -9,6 +9,7 @@ import {
     LoadingOutlined,
     PlusOutlined,
     AppstoreAddOutlined,
+    EyeOutlined,
 } from "@ant-design/icons-vue";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import dayjs from "dayjs";
@@ -17,6 +18,7 @@ const props = defineProps({
     records: Object,
     filters: Object,
     categories: Array,
+    productionBatches: Array,
 });
 
 const imageUrl = ref("");
@@ -25,6 +27,7 @@ const form = useForm({
     id: "",
     image_url: "",
     category_id: "",
+    production_batch_id: "",
     name: "",
     notes: "",
     price: "",
@@ -89,11 +92,6 @@ const columns = [
         title: "Price",
         dataIndex: "price",
         key: "price",
-    },
-    {
-        title: "Expiry Date",
-        dataIndex: "expiry_date",
-        key: "expiry_date",
     },
     {
         title: "Action",
@@ -195,6 +193,7 @@ const updateData = () => {
         {
             _method: "put",
             name: form.name,
+            production_batch_id: form.production_batch_id,
             image_url: form.image_url,
             notes: form.notes,
             category_id: form.category_id,
@@ -237,6 +236,7 @@ const editData = (data) => {
     isEdit.value = true;
     form.id = data.id;
     form.category_id = data.category_id;
+    form.production_batch_id = data.production_batch_id;
     form.name = data.name;
     form.notes = data.notes;
     form.price = data.price;
@@ -292,6 +292,22 @@ watchDebounced(
     },
     { debounce: 300 }
 );
+
+// Production batch Modal
+
+const productionBacthModalOpen = ref(false);
+
+const productionBacthNumber = ref("");
+const productionBatchDate = ref("");
+const productionBatchExpirationDate = ref("");
+
+const viewProductionBatch = (record) => {
+    productionBacthModalOpen.value = true;
+    productionBacthNumber.value = record.production_batch.batch_number;
+    productionBatchDate.value = record.production_batch.production_date;
+    productionBatchExpirationDate.value =
+        record.production_batch.expiration_date;
+};
 </script>
 
 <template>
@@ -349,6 +365,24 @@ watchDebounced(
                                             >
                                                 <template #icon>
                                                     <AppstoreAddOutlined />
+                                                </template>
+                                            </a-button>
+                                        </a-tooltip>
+                                        <a-tooltip
+                                            title="View Production Batch"
+                                        >
+                                            <a-button
+                                                :disabled="
+                                                    record.production_batch_id ===
+                                                    null
+                                                "
+                                                @click="
+                                                    viewProductionBatch(record)
+                                                "
+                                                shape="circle"
+                                            >
+                                                <template #icon>
+                                                    <EyeOutlined />
                                                 </template>
                                             </a-button>
                                         </a-tooltip>
@@ -442,6 +476,33 @@ watchDebounced(
                     </div>
                     <div>
                         <a-form-item
+                            label="Production Batch"
+                            :validate-status="
+                                form.errors.production_batch_id ? 'error' : null
+                            "
+                            :help="form.errors.production_batch_id"
+                        >
+                            <a-select
+                                ref="select"
+                                show-search
+                                allow-clear
+                                v-model:value="form.production_batch_id"
+                                placeholder="Select Production Batch"
+                                style="width: 100%"
+                                :options="
+                                    props.productionBatches
+                                        ?.map((productionBatch) => ({
+                                            value: productionBatch.id,
+                                            label: productionBatch.batch_number,
+                                        }))
+                                        .sort((a, b) =>
+                                            a.label.localeCompare(b.label)
+                                        )
+                                "
+                                :filter-option="filterOption"
+                            />
+                        </a-form-item>
+                        <a-form-item
                             label="Category"
                             :validate-status="
                                 form.errors.category_id ? 'error' : null
@@ -498,7 +559,7 @@ watchDebounced(
                                 :min="0"
                             />
                         </a-form-item>
-                        <a-form-item
+                        <!-- <a-form-item
                             label="Expiry Date"
                             :validate-status="
                                 form.errors.expiry_date ? 'error' : null
@@ -511,8 +572,9 @@ watchDebounced(
                                 @change="handleChangeDate"
                                 style="width: 100%"
                             />
-                        </a-form-item>
+                        </a-form-item> -->
                     </div>
+
                     <div class="w-full">
                         <a-form-item
                             :wrapper-col="{ offset: 4, span: 20 }"
@@ -599,6 +661,56 @@ watchDebounced(
                         </div>
                     </a-form-item>
                 </a-form>
+            </a-modal>
+
+            <a-modal
+                :maskClosable="true"
+                v-model:open="productionBacthModalOpen"
+                title="Production Batch Details"
+                :footer="false"
+                size="md"
+                class="production-batch-modal"
+            >
+                <div class="modal-content p-6">
+                    <!-- Modal Header -->
+                    <div
+                        class="modal-header border-b border-gray-200 pb-4 mb-4"
+                    >
+                        <h3 class="text-xl font-semibold text-gray-800">
+                            Batch Information
+                        </h3>
+                    </div>
+
+                    <!-- Modal Body -->
+                    <div class="modal-body">
+                        <div class="space-y-4">
+                            <div class="flex justify-between">
+                                <span class="font-semibold text-gray-700"
+                                    >Batch Number:</span
+                                >
+                                <span class="text-gray-600">{{
+                                    productionBacthNumber
+                                }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="font-semibold text-gray-700"
+                                    >Production Date:</span
+                                >
+                                <span class="text-gray-600">{{
+                                    productionBatchDate
+                                }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="font-semibold text-gray-700"
+                                    >Expiration Date:</span
+                                >
+                                <span class="text-gray-600">{{
+                                    productionBatchExpirationDate
+                                }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </a-modal>
         </div>
     </AuthenticatedLayout>
