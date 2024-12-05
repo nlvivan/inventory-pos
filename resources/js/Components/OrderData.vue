@@ -147,6 +147,7 @@ const setCategories = (salesData, filterBy) => {
         return;
     }
     if (filterBy == "last_year") {
+        const { category, salesGraphData } = last_year(salesData, userTimezone);
         categories.value = category;
         salesTotal.value = salesGraphData;
         tickAmount.value = 12;
