@@ -54,16 +54,16 @@ const userNavigation = [
             <div
                 class="py-4 mx-auto max-w-7xl px-4 sm:px-6 lg:px-4 flex justify-around items-baseline"
             >
-                <Link :href="route('home.index')">
+                <a href="#explore_categories">
                     <a-button type="primary">
                         <template #icon>
                             <AppstoreOutlined />
                         </template>
                         Browse All Categories
                     </a-button>
-                </Link>
+                </a>
                 <div class="flex gap-2">
-                    <Link>
+                    <Link :href="route('home.index')">
                         <a-button
                             type="link"
                             class="text-[#1C486F] font-semibold"
@@ -96,7 +96,7 @@ const userNavigation = [
                             Promotions
                         </a-button>
                     </Link>
-                    <Link>
+                    <a href="#new_products">
                         <a-button
                             type="link"
                             class="text-[#1C486F] font-semibold"
@@ -106,7 +106,7 @@ const userNavigation = [
                             </template>
                             New Products
                         </a-button>
-                    </Link>
+                    </a>
                 </div>
                 <div>
                     <p class="text-md text-[#1C486F] font-semibold">
@@ -279,11 +279,11 @@ const userNavigation = [
                                 >
                                     Promotions</Link
                                 >
-                                <Link
-                                    href="#"
+                                <a
+                                    href="#new_products"
                                     class="no-underline text-[#1C486F]"
                                 >
-                                    New Products</Link
+                                    New Products</a
                                 >
                             </div>
                         </div>
