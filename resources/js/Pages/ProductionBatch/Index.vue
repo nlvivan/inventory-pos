@@ -85,6 +85,7 @@ const closeCreateModal = () => {
     form.errors = {};
     form.reset();
     productionDate.value = null;
+    expirationDate.value = null;
     isCreateModalVisible.value = false;
 };
 
