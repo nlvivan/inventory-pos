@@ -92,6 +92,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/customer/orders/{order}/invoice', [ProfileController::class, 'showInvoice'])->name('customer.orders.invoice');
         Route::get('/customer/profile', [ProfileController::class, 'edit'])->name('customer.profile.edit');
         Route::put('/customer/profile/update', [ProfileController::class, 'update'])->name('customer.profile.update');
+        Route::get('/customer/orders/{order}/invoice/pdf', [OrderController::class, 'showInvoice'])->name('customer.orders.invoice.pdf');
 
         Route::post('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
     });

@@ -22,7 +22,8 @@ class ProductReturnController extends Controller
             ->paginate($request->per_page);
 
         $products = Product::query()
-            ->get(['id', 'name']);
+            ->with('productionBatch')
+            ->get();
 
         return Inertia::render('Admin/ProductReturns', [
             'products' => $products,

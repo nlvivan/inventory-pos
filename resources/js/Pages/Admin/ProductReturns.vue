@@ -21,6 +21,8 @@ const props = defineProps({
     products: Array,
 });
 
+console.log(props.products);
+
 const imageUrl = ref("");
 const fileList = ref([]);
 const form = useForm({
@@ -398,7 +400,11 @@ watchDebounced(
                                     props.products
                                         ?.map((product) => ({
                                             value: product.id,
-                                            label: product.name,
+                                            label: `${product.name} - (${
+                                                product?.production_batch
+                                                    ?.batch_number ??
+                                                'No Batch Number'
+                                            })`,
                                         }))
                                         .sort((a, b) =>
                                             a.label.localeCompare(b.label)

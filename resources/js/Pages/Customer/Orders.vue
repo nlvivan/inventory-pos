@@ -157,6 +157,7 @@ const confirm = (record) => {
                                 </a-button>
                             </Link>
                             <a-popconfirm
+                                v-if="record.status === 'for-pick-up'"
                                 title="Are you sure you want to cancel your order?"
                                 ok-text="Yes"
                                 cancel-text="No"
