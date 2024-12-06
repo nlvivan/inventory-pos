@@ -8,6 +8,7 @@ use App\Models\OrderItems;
 use App\Models\Product;
 use App\Models\Stock;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Spatie\SimpleExcel\SimpleExcelWriter;
@@ -199,6 +200,54 @@ class AdminDashboardController extends Controller
                 'totalSales' => $totalSales,
                 'topSales' => $topSales,
                 'logo' => $dataUrl,
+            ]);
+
+        return $pdf->stream('orders.pdf');
+    }
+
+    public function salesReport(Request $request)
+    {
+        $request->mergeIfMissing([
+            'from' => date('Y/m/d', strtotime('first day of this month')),
+            'to' => date('Y/m/d'),
+        ]);
+
+        $imagePath = public_path('assets/login_logo.png');
+        $imageData = file_get_contents($imagePath);
+        $base64 = base64_encode($imageData);
+        $mimeType = mime_content_type($imagePath);
+        $dataUrl = 'data:'.$mimeType.';base64,'.$base64;
+
+        $totalSales = Order::query()
+            ->when($request->from && $request->to, function ($query) use ($request) {
+                $query->where(function ($query) use ($request) {
+                    $query->where('created_at', '>=', $request->from)
+                        ->where('created_at', '<=', $request->to);
+                });
+            })
+            ->where('status', 'paid')
+            ->sum('total_amount');
+
+        $orders = Order::query()->where('status', 'paid')
+            ->with(['orderItems'])
+            ->when($request->from && $request->to, function ($query) use ($request) {
+                $query->where(function ($query) use ($request) {
+                    $query->where('created_at', '>=', $request->from)
+                        ->where('created_at', '<=', $request->to);
+                });
+            })
+            ->get();
+
+        $fromDate = Carbon::createFromFormat('Y/m/d', $request->from)->format('M j, Y');
+        $toDate = Carbon::createFromFormat('Y/m/d', $request->to)->format('M j, Y');
+
+        $pdf = Pdf::loadView('pdf.sales-report',
+            [
+                'totalSales' => $totalSales,
+                'orders' => $orders,
+                'logo' => $dataUrl,
+                'from' => $fromDate,
+                'to' => $toDate,
             ]);
 
         return $pdf->stream('orders.pdf');

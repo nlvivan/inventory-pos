@@ -54,6 +54,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/stocks/{stock}/add-stock', [StockController::class, 'addStock'])->name('stocks.addStock');
             Route::post('/products/{product}/add-stock', [ProductController::class, 'addStock'])->name('products.addStock');
             Route::resource('production-batches', ProductionBatchController::class);
+            Route::get('/sales-reports', [AdminDashboardController::class, 'salesReport'])->name('admin.dashboard.sales-report');
             Route::get('/dashboard/print-pdf', [AdminDashboardController::class, 'printPdf'])->name('admin.dashboard.print-pdf');
             Route::get('/dashboard', [AdminDashboardController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('admin.dashboard');
             Route::get('/dashboard/sales', [AdminDashboardController::class, 'getSalesData'])->name('admin.dashboard.sales');

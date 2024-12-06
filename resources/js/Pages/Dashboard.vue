@@ -198,6 +198,18 @@ const formattedDateRange = computed(() => {
                             >
                                 <a-button danger> Print as PDF </a-button>
                             </a>
+                            <a
+                                :href="
+                                    route('admin.dashboard.sales-report', {
+                                        from: formattedDateRange.from,
+                                        to: formattedDateRange.to,
+                                    })
+                                "
+                                target="_blank"
+                                class="ml-2"
+                            >
+                                <a-button danger> Print Sales Report </a-button>
+                            </a>
                         </div>
                     </div>
 
