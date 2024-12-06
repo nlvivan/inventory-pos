@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Notifications\SendCredsToUserNotification;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -70,6 +71,25 @@ class UserController extends Controller
         $user->assignRole($request->role);
 
         return redirect()->back();
+    }
+
+    public function printPdf(Request $request)
+    {
+        $imagePath = public_path('assets/login_logo.png');
+        $imageData = file_get_contents($imagePath);
+        $base64 = base64_encode($imageData);
+        $mimeType = mime_content_type($imagePath);
+        $dataUrl = 'data:'.$mimeType.';base64,'.$base64;
+
+        $customers = User::role(['customer'])->get();
+
+        $pdf = Pdf::loadView('pdf.users',
+            [
+                'record' => $customers,
+                'logo' => $dataUrl,
+            ]);
+
+        return $pdf->stream('users.pdf');
     }
 
     public function destroy(User $user)

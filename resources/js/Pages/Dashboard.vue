@@ -2,7 +2,7 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, router } from "@inertiajs/vue3";
 import SalesIcon from "@/Components/SalesIcon.vue";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 import { IconReportMoney } from "@tabler/icons-vue";
 import OrderData from "@/Components/OrderData.vue";
@@ -156,6 +156,18 @@ function handleChangeFilter() {
         }
     );
 }
+
+const formattedDateRange = computed(() => {
+    const from =
+        dateRange.value !== null && dateRange.value.length
+            ? formatDateRange(dateRange.value[0])
+            : formatDateRange(dayjs().startOf("month").format("YYYY/MM/DD"));
+    const to =
+        dateRange.value !== null && dateRange.value.length
+            ? formatDateRange(dateRange.value[1])
+            : formatDateRange(dayjs().format("YYYY/MM/DD"));
+    return { from, to };
+});
 </script>
 
 <template>
@@ -164,13 +176,31 @@ function handleChangeFilter() {
         <div class="">
             <div class="">
                 <div class="mt-2 bg-white p-1.5" :title="false">
-                    <div class="flex justify-center items-center mb-2">
-                        <!-- Added flexbox centering -->
-                        <a-range-picker
-                            v-model:value="dateRange"
-                            @change="handleChangeFilter"
-                        />
+                    <div class="flex justify-between items-center mb-2">
+                        <!-- Date Range Picker centered -->
+                        <div class="flex-grow flex justify-center">
+                            <a-range-picker
+                                v-model:value="dateRange"
+                                @change="handleChangeFilter"
+                            />
+                        </div>
+
+                        <!-- Print PDF button aligned to the right -->
+                        <div class="flex-shrink-0">
+                            <a
+                                :href="
+                                    route('admin.dashboard.print-pdf', {
+                                        from: formattedDateRange.from,
+                                        to: formattedDateRange.to,
+                                    })
+                                "
+                                target="_blank"
+                            >
+                                <a-button danger> Print as PDF </a-button>
+                            </a>
+                        </div>
                     </div>
+
                     <div class="grid grid-cols-2 gap-2">
                         <a-card title="Total Sales" class="mt-2">
                             <div
@@ -181,6 +211,7 @@ function handleChangeFilter() {
                                 </h1>
                             </div>
                         </a-card>
+
                         <a-card title="Product Top Sales" class="mt-2">
                             <a-table
                                 :columns="columns"
@@ -205,8 +236,7 @@ function handleChangeFilter() {
                                             column.dataIndex === 'total_price'
                                         "
                                     >
-                                        ₱
-                                        {{ record.total_price }}
+                                        ₱{{ record.total_price }}
                                     </template>
                                 </template>
                             </a-table>

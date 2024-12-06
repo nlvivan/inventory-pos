@@ -214,12 +214,17 @@ watchDebounced(
                                 placeholder="Search"
                             />
                         </div>
-                        <a-button
-                            type="primary"
-                            class="rounded-[5px]"
-                            @click="showCreateModal"
-                            >Create User</a-button
-                        >
+                        <div class="flex gap-2">
+                            <a :href="route('users.print-pdf')" target="_blank">
+                                <a-button danger> Print as PDF </a-button>
+                            </a>
+                            <a-button
+                                type="primary"
+                                class="rounded-[5px]"
+                                @click="showCreateModal"
+                                >Create User</a-button
+                            >
+                        </div>
                     </div>
 
                     <div class="w-full">

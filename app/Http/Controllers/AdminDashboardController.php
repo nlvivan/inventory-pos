@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\OrderItems;
 use App\Models\Product;
 use App\Models\Stock;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Spatie\SimpleExcel\SimpleExcelWriter;
@@ -152,5 +153,54 @@ class AdminDashboardController extends Controller
         }
 
         return $csv->toBrowser();
+    }
+
+    public function printPdf(Request $request)
+    {
+        $request->mergeIfMissing([
+            'from' => date('Y/m/d', strtotime('first day of this month')),
+            'to' => date('Y/m/d'),
+        ]);
+
+        $imagePath = public_path('assets/login_logo.png');
+        $imageData = file_get_contents($imagePath);
+        $base64 = base64_encode($imageData);
+        $mimeType = mime_content_type($imagePath);
+        $dataUrl = 'data:'.$mimeType.';base64,'.$base64;
+
+        $totalSales = Order::query()
+            ->when($request->from && $request->to, function ($query) use ($request) {
+                $query->where(function ($query) use ($request) {
+                    $query->where('created_at', '>=', $request->from)
+                        ->where('created_at', '<=', $request->to);
+                });
+            })
+            ->where('status', 'paid')
+            ->sum('total_amount');
+
+        $topSales = OrderItems::query()
+            ->whereHas('order', function ($query) {
+                $query->where('status', 'paid');
+            })
+            ->when($request->from && $request->to, function ($query) use ($request) {
+                $query->where(function ($query) use ($request) {
+                    $query->where('created_at', '>=', $request->from)
+                        ->where('created_at', '<=', $request->to);
+                });
+            })
+            ->with('product')
+            ->selectRaw('SUM(quantity) as total_quantity, SUM(total_price) as total_price,  product_id')
+            ->groupBy('product_id')
+            ->orderBy('total_quantity', 'desc')
+            ->get();
+
+        $pdf = Pdf::loadView('pdf.dashboard',
+            [
+                'totalSales' => $totalSales,
+                'topSales' => $topSales,
+                'logo' => $dataUrl,
+            ]);
+
+        return $pdf->stream('orders.pdf');
     }
 }
