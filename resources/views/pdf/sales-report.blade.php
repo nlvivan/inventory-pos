@@ -96,9 +96,6 @@
             </tr>
         </table>
 
-        <!-- Footer -->
-        <p style="text-align: center; margin-top: 20px;">Thank you for your business!</p>
-
         <!-- Prepared By Section -->
         <div class="prepared-by">
             <p>Prepared</p> 
