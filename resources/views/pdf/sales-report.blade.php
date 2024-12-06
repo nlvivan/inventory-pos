@@ -70,7 +70,7 @@
 <body>
     <div class="invoice-box">
 
-        <h2>Top Sales</h2>
+        <h2>Sales Report</h2>
         <h3>Period At</h3>
         <h3>{{ $from }} -  {{ $to }}</h3>
 
