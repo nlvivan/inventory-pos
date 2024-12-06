@@ -26,6 +26,11 @@ const columns = [
         key: "order_number",
     },
     {
+        title: "Customer",
+        dataIndex: ["customer", "name"],
+        key: "customer_name",
+    },
+    {
         title: "Date and Time",
         dataIndex: "created_at",
         key: "created_at",
@@ -111,6 +116,11 @@ const confirm = (record) => {
                     }}</span>
                 </p>
                 <p>{{ new Date().toDateString() }}</p>
+            </div>
+            <div class="flex justify-end">
+                <a :href="route('cashier.orders.print-pdf')" target="_blank">
+                    <a-button danger> Print as PDF </a-button>
+                </a>
             </div>
 
             <div

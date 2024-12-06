@@ -176,6 +176,35 @@ class OrderController extends Controller
         ]);
     }
 
+    public function printPdf(Request $request)
+    {
+        $imagePath = public_path('assets/login_logo.png');
+        $imageData = file_get_contents($imagePath);
+        $base64 = base64_encode($imageData);
+        $mimeType = mime_content_type($imagePath);
+        $dataUrl = 'data:'.$mimeType.';base64,'.$base64;
+
+        $records = Order::query()
+            ->with([
+                'orderItems',
+                'orderItems.product',
+                'orderItems.product.category',
+                'employee',
+                'customer',
+            ])
+            ->search($request->search)
+            ->latest()
+            ->get();
+
+        $pdf = Pdf::loadView('pdf.orders',
+            [
+                'record' => $records,
+                'logo' => $dataUrl,
+            ]);
+
+        return $pdf->stream('orders.pdf');
+    }
+
     public function payOrder(Request $request, Order $order)
     {
 
