@@ -81,6 +81,8 @@ const searchItem = () => {
     );
 };
 
+watchDebounced(search, searchItem, { debounce: 300 });
+
 const submitOrders = () => {
     router.post(
         route("cashier.orders.store"),
@@ -189,9 +191,9 @@ const submitOrders = () => {
                             class="py-4"
                             placeholder="Search Anything..."
                         />
-                        <a-button type="primary" class="" @click="searchItem"
+                        <!-- <a-button type="primary" class="" @click="searchItem"
                             >Search</a-button
-                        >
+                        > -->
                         <div
                             class="p-2 h-64 rounded-md"
                             style="border: 2px solid #e4e4e4"
@@ -261,6 +263,13 @@ const submitOrders = () => {
                         <a-input-number
                             v-model:value="changeAmount"
                             class="w-full"
+                        />
+                    </a-form-item>
+                    <a-form-item label="Total Amount">
+                        <a-input-number
+                            v-model:value="totalAmount"
+                            class="w-full"
+                            disabled
                         />
                     </a-form-item>
                 </a-form>

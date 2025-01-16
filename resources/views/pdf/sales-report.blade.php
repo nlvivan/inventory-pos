@@ -69,7 +69,7 @@
 </head>
 <body>
     <div class="invoice-box">
-
+    <img src='{{$logo}}' style="width: 150px;"/>
         <h2>Sales Report</h2>
         <h3>Period At</h3>
         <h3>{{ $from }} -  {{ $to }}</h3>
@@ -78,6 +78,7 @@
         <table>
             <tr class="table-header">
                 <td>Transaction ID</td>
+                <td>Date</td>
                 <td>Items</td>
                 <td>Amount</td>
             </tr>
@@ -85,13 +86,15 @@
             @foreach($orders as $order)
             <tr>
                 <td>{{ $order->order_number }}</td>
+                <td>{{ $order->created_at->format('d/m/Y') }}</td>
                 <td>{{ count($order->orderItems) }}</td>
+             
                 <td>&#8369; {{ $order->total_amount }}</td>
             </tr>
             @endforeach
 
             <tr class="table-total">
-                <td colspan="2" class="total">Total</td>
+                <td colspan="3" class="total">Total</td>
                 <td>&#8369; {{ $totalSales }}</td>
             </tr>
         </table>

@@ -17,6 +17,7 @@ import { notification, message } from "ant-design-vue";
 
 const props = defineProps({
     records: Array,
+    schedules: Array,
 });
 
 const selectedSchedule = ref("");
@@ -67,6 +68,40 @@ const placeOrder = () => {
                         </p>
                         <div class="grid grid-cols-4 gap-2">
                             <div
+                                v-for="schedule in schedules"
+                                :key="schedule.id"
+                            >
+                                <button
+                                    :disabled="!schedule.is_enabled"
+                                    v-if="
+                                        schedule.schedule === 'Morning Schedule'
+                                    "
+                                    @click="
+                                        schedule.is_enabled &&
+                                            (selectedSchedule = schedule.time)
+                                    "
+                                    class="rounded-lg border p-4 text-center"
+                                    :class="{
+                                        'text-amber-500':
+                                            selectedSchedule === schedule.time,
+                                        'text-gray-600':
+                                            selectedSchedule !== schedule.time,
+                                        'cursor-pointer': schedule.is_enable,
+                                        'cursor-not-allowed':
+                                            !schedule.is_enable,
+                                    }"
+                                    :style="{
+                                        'border: 1px solid #F59E0B':
+                                            selectedSchedule === schedule.time,
+                                        'border: 1px solid #ccc':
+                                            selectedSchedule !== schedule.time,
+                                    }"
+                                >
+                                    {{ schedule.time }}
+                                </button>
+                            </div>
+                            <!-- </div>
+                            <div
                                 @click="selectedSchedule = '8AM-10AM'"
                                 class="rounded-lg border p-4 text-center cursor-pointer"
                                 :class="
@@ -97,7 +132,7 @@ const placeOrder = () => {
                                 "
                             >
                                 10:00 AM - 12:00 PM
-                            </div>
+                            </div> -->
                         </div>
                         <div class="mt-4">
                             <p class="text-lg font-semibold text-amber-500">
@@ -105,116 +140,33 @@ const placeOrder = () => {
                             </p>
                             <div class="grid grid-cols-4 gap-2">
                                 <div
-                                    @click="selectedSchedule = '12PM-1PM'"
-                                    class="rounded-lg border p-4 text-center cursor-pointer"
-                                    :class="
-                                        selectedSchedule === '12PM-1PM'
-                                            ? 'text-amber-500'
-                                            : 'text-gray-600'
-                                    "
-                                    :style="
-                                        selectedSchedule === '12PM-1PM'
-                                            ? 'border: 1px solid #F59E0B'
-                                            : 'border: 1px solid #ccc'
-                                    "
+                                    v-for="schedule in schedules"
+                                    :key="schedule.id"
                                 >
-                                    12:00 PM - 1:00 PM
-                                </div>
-                                <div
-                                    @click="selectedSchedule = '1PM-2PM'"
-                                    class="rounded-lg border p-4 text-center cursor-pointer"
-                                    :class="
-                                        selectedSchedule === '1PM-2PM'
-                                            ? 'text-amber-500'
-                                            : 'text-gray-600'
-                                    "
-                                    :style="
-                                        selectedSchedule === '1PM-2PM'
-                                            ? 'border: 1px solid #F59E0B'
-                                            : 'border: 1px solid #ccc'
-                                    "
-                                >
-                                    1:00 PM - 2:00 PM
-                                </div>
-                                <div
-                                    @click="selectedSchedule = '2PM-3PM'"
-                                    class="rounded-lg border p-4 text-center cursor-pointer"
-                                    :class="
-                                        selectedSchedule === '2PM-3PM'
-                                            ? 'text-amber-500'
-                                            : 'text-gray-600'
-                                    "
-                                    :style="
-                                        selectedSchedule === '2PM-3PM'
-                                            ? 'border: 1px solid #F59E0B'
-                                            : 'border: 1px solid #ccc'
-                                    "
-                                >
-                                    2:00 PM - 3:00 PM
-                                </div>
-                                <div
-                                    @click="selectedSchedule = '3PM-4PM'"
-                                    class="rounded-lg border p-4 text-center cursor-pointer"
-                                    :class="
-                                        selectedSchedule === '3PM-4PM'
-                                            ? 'text-amber-500'
-                                            : 'text-gray-600'
-                                    "
-                                    :style="
-                                        selectedSchedule === '3PM-4PM'
-                                            ? 'border: 1px solid #F59E0B'
-                                            : 'border: 1px solid #ccc'
-                                    "
-                                >
-                                    3:00 PM - 4:00 PM
-                                </div>
-                                <div
-                                    @click="selectedSchedule = '4PM-5PM'"
-                                    class="rounded-lg border p-4 text-center cursor-pointer"
-                                    :class="
-                                        selectedSchedule === '4PM-5PM'
-                                            ? 'text-amber-500'
-                                            : 'text-gray-600'
-                                    "
-                                    :style="
-                                        selectedSchedule === '4PM-5PM'
-                                            ? 'border: 1px solid #F59E0B'
-                                            : 'border: 1px solid #ccc'
-                                    "
-                                >
-                                    4:00 PM - 5:00 PM
-                                </div>
-                                <div
-                                    @click="selectedSchedule = '5PM-6PM'"
-                                    class="rounded-lg border p-4 text-center cursor-pointer"
-                                    :class="
-                                        selectedSchedule === '5PM-6PM'
-                                            ? 'text-amber-500'
-                                            : 'text-gray-600'
-                                    "
-                                    :style="
-                                        selectedSchedule === '5PM-6PM'
-                                            ? 'border: 1px solid #F59E0B'
-                                            : 'border: 1px solid #ccc'
-                                    "
-                                >
-                                    5:00 PM - 6:00 PM
-                                </div>
-                                <div
-                                    @click="selectedSchedule = '6PM-7PM'"
-                                    class="rounded-lg border p-4 text-center cursor-pointer"
-                                    :class="
-                                        selectedSchedule === '6PM-7PM'
-                                            ? 'text-amber-500'
-                                            : 'text-gray-600'
-                                    "
-                                    :style="
-                                        selectedSchedule === '6PM-7PM'
-                                            ? 'border: 1px solid #F59E0B'
-                                            : 'border: 1px solid #ccc'
-                                    "
-                                >
-                                    6:00 PM - 7:00 PM
+                                    <div
+                                        v-if="
+                                            schedule.schedule ===
+                                            'Afternoon Schedule'
+                                        "
+                                        @click="
+                                            schedule.is_enabled &&
+                                                (selectedSchedule =
+                                                    schedule.time)
+                                        "
+                                        class="rounded-lg border p-4 text-center cursor-pointer"
+                                        :class="
+                                            selectedSchedule === schedule.time
+                                                ? 'text-amber-500'
+                                                : 'text-gray-600'
+                                        "
+                                        :style="
+                                            selectedSchedule === schedule.time
+                                                ? 'border: 1px solid #F59E0B'
+                                                : 'border: 1px solid #ccc'
+                                        "
+                                    >
+                                        {{ schedule.time }}
+                                    </div>
                                 </div>
                             </div>
                         </div>

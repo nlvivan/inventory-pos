@@ -77,6 +77,11 @@ const menus = [
         path: route("users.index"),
         icon: IconUsers,
     },
+    {
+        label: "Schedules",
+        path: route("schedules.index"),
+        icon: IconUsers,
+    },
 ];
 
 const mapLinkItem = (link) => {

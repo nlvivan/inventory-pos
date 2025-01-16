@@ -11,6 +11,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductionBatchController;
 use App\Http\Controllers\ProductReturnController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\UserController;
 use App\Http\Resources\TopSalesResource;
@@ -45,6 +46,7 @@ Route::middleware('auth')->group(function () {
     Route::group(['middleware' => ['role:admin']], function () {
         Route::prefix('admin')->group(function () {
             Route::resource('categories', CategoryController::class);
+            Route::resource('schedules', ScheduleController::class);
             Route::post('products/{product}/restore', action: [ProductController::class, 'restore'])->withTrashed()->name('products.restore');
             Route::get('products/archive', [ProductController::class, 'archive'])->name('products.archive');
             Route::resource('products', ProductController::class);

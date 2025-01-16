@@ -7,6 +7,7 @@ use App\Models\Notification;
 use App\Models\Order;
 use App\Models\OrderItems;
 use App\Models\Product;
+use App\Models\Schedule;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -20,7 +21,10 @@ class CheckoutController extends Controller
 
         $carts = auth()->user()->carts()->with('product')->get();
 
+        $schedules = Schedule::query()->get();
+
         return Inertia::render('Checkout/Index', [
+            'schedules' => $schedules,
             'records' => CartResource::collection($carts),
         ]);
     }
