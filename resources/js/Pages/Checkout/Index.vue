@@ -71,8 +71,14 @@ const placeOrder = () => {
                                 v-for="schedule in schedules"
                                 :key="schedule.id"
                             >
-                                <button
+                                <a-button
+                                    size="large"
                                     :disabled="!schedule.is_enabled"
+                                    :type="
+                                        selectedSchedule === schedule.time
+                                            ? 'primary'
+                                            : 'default'
+                                    "
                                     v-if="
                                         schedule.schedule === 'Morning Schedule'
                                     "
@@ -80,25 +86,10 @@ const placeOrder = () => {
                                         schedule.is_enabled &&
                                             (selectedSchedule = schedule.time)
                                     "
-                                    class="rounded-lg border p-4 text-center"
-                                    :class="{
-                                        'text-amber-500':
-                                            selectedSchedule === schedule.time,
-                                        'text-gray-600':
-                                            selectedSchedule !== schedule.time,
-                                        'cursor-pointer': schedule.is_enable,
-                                        'cursor-not-allowed':
-                                            !schedule.is_enable,
-                                    }"
-                                    :style="{
-                                        'border: 1px solid #F59E0B':
-                                            selectedSchedule === schedule.time,
-                                        'border: 1px solid #ccc':
-                                            selectedSchedule !== schedule.time,
-                                    }"
+                                    class="w-full h-12"
                                 >
                                     {{ schedule.time }}
-                                </button>
+                                </a-button>
                             </div>
                             <!-- </div>
                             <div
@@ -143,7 +134,14 @@ const placeOrder = () => {
                                     v-for="schedule in schedules"
                                     :key="schedule.id"
                                 >
-                                    <div
+                                    <a-button
+                                        size="large"
+                                        :disabled="!schedule.is_enabled"
+                                        :type="
+                                            selectedSchedule === schedule.time
+                                                ? 'primary'
+                                                : 'default'
+                                        "
                                         v-if="
                                             schedule.schedule ===
                                             'Afternoon Schedule'
@@ -153,20 +151,10 @@ const placeOrder = () => {
                                                 (selectedSchedule =
                                                     schedule.time)
                                         "
-                                        class="rounded-lg border p-4 text-center cursor-pointer"
-                                        :class="
-                                            selectedSchedule === schedule.time
-                                                ? 'text-amber-500'
-                                                : 'text-gray-600'
-                                        "
-                                        :style="
-                                            selectedSchedule === schedule.time
-                                                ? 'border: 1px solid #F59E0B'
-                                                : 'border: 1px solid #ccc'
-                                        "
+                                        class="w-full h-12"
                                     >
                                         {{ schedule.time }}
-                                    </div>
+                                    </a-button>
                                 </div>
                             </div>
                         </div>
