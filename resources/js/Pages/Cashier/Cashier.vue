@@ -1,7 +1,7 @@
 <script setup>
 import CashierLayout from "@/Layouts/CashierLayout.vue";
 import { Head, useForm, router, usePage } from "@inertiajs/vue3";
-import { ref, reactive, computed } from "vue";
+import { ref, reactive, computed, watch } from "vue";
 import { watchDebounced } from "@vueuse/core";
 import { DeleteOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
@@ -13,10 +13,16 @@ const props = defineProps({
 
 const openQuantityModal = ref(false);
 const openCashModal = ref(false);
-const cash = ref("");
+const cash = ref(null);
 const change = ref("");
 const quantity = ref("");
 const addedProduct = ref({});
+
+watch(cash, (newVal) => {
+    if (newVal !== null && newVal !== "") {
+        cash.value = parseFloat(newVal).toFixed(2);
+    }
+});
 
 const orderItems = reactive([]);
 
@@ -53,9 +59,10 @@ const totalAmount = computed(() => {
 });
 
 const changeAmount = computed(() => {
-    return cash.value ? cash.value - totalAmount.value : "";
+    return cash.value
+        ? parseFloat((cash.value - totalAmount.value).toFixed(2))
+        : "";
 });
-
 const removeItem = (orderId) => {
     orderItems.splice(
         orderItems.findIndex(function (item) {
@@ -257,7 +264,17 @@ const submitOrders = () => {
             >
                 <a-form layout="vertical">
                     <a-form-item label="Cash">
-                        <a-input-number v-model:value="cash" class="w-full" />
+                        <a-input-number
+                            v-model:value="cash"
+                            class="w-full"
+                            :formatter="
+                                (value) =>
+                                    value
+                                        ? `${parseFloat(value).toFixed(2)}`
+                                        : ''
+                            "
+                            :parser="(value) => value.replace(/[^\d.]/g, '')"
+                        />
                     </a-form-item>
                     <a-form-item label="Change">
                         <a-input-number
