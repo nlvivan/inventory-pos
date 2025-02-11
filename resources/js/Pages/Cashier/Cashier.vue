@@ -267,6 +267,7 @@ const submitOrders = () => {
                     </a-form-item>
                     <a-form-item label="Total Amount">
                         <a-input-number
+                            addon-before="₱"
                             v-model:value="totalAmount"
                             class="w-full"
                             disabled
