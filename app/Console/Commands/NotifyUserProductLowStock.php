@@ -9,47 +9,41 @@ use Illuminate\Console\Command;
 
 class NotifyUserProductLowStock extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'app:notify-user-product-low-stock';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Command description';
+    protected $description = 'Notify admins when a product has low stock';
 
-    /**
-     * Execute the console command.
-     */
     public function handle()
     {
-        $users = User::role(['admin'])->get();
+        $users = User::role('admin')->get();
 
-        Product::query()
-            ->each(function (Product $product) use ($users) {
+        Product::with(['stock', 'productionBatch'])
+            ->whereHas('stock', function ($query) {
+                $query->whereColumn('stock', '<=', 'critical_stock');
+            })
+            ->chunk(100, function ($products) use ($users) {
+                logger($products);
+                foreach ($products as $product) {
+                    // Defensive check (in case of missing relationships)
+                    if (! $product->stock || ! $product->productionBatch) {
+                        continue;
+                    }
 
-                if ($product?->stock?->stock <= $product?->stock?->critical_stock) {
+                    $data = [
+                        'batch_number' => $product->productionBatch->batch_number,
+                        'product_name' => $product->name,
+                        'product_id' => $product->id,
+                        'remaining_stock' => $product->stock->stock,
+                    ];
 
-                    $users->each(function (User $user) use ($product) {
-                        $data = [
-                            'batch_number' => $product?->productionBatch?->batch_number,
-                            'product_name' => $product->name,
-                            'product_id' => $product->id,
-                            'remaining_stock' => $product?->stock?->stock,
-                        ];
-
+                    foreach ($users as $user) {
                         Notification::create([
                             'type' => 'low_stock',
                             'user_id' => $user->id,
                             'data' => $data,
                             'read' => false,
                         ]);
-                    });
+                    }
                 }
             });
     }
