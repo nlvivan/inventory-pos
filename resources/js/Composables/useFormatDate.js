@@ -14,34 +14,34 @@ dayjs.extend(advanced);
 dayjs.extend(utc);
 dayjs.extend(isocalendar);
 
-const timeZone = dayjs.tz.guess();
+// Set default timezone to Manila
+const MANILA_TZ = "Asia/Manila";
 
 export function useFormatDate() {
     dayjs.locale("en");
 
     const timeFromNow = (date) => {
-        return dayjs(date).fromNow();
+        return dayjs(date).tz(MANILA_TZ).fromNow();
     };
 
     const getUserTimezone = () => {
-        return dayjs.tz.guess();
+        return MANILA_TZ;
     };
 
     const formatDate = (date, localTimeZone = false, format = null) => {
         if (localTimeZone) {
             return dayjs
                 .utc(date)
-                .tz(timeZone)
+                .tz(MANILA_TZ)
                 .format(format ? format : "M/D/YY [at] h:mm A z");
         }
-        return dayjs(date).tz("America/Chicago").format("MMM DD YYYY h:mm A");
+        return dayjs(date).tz(MANILA_TZ).format("MMM DD YYYY h:mm A");
     };
 
     const formatDateTime = (created_at) => {
-        const now = dayjs();
-        const createdAtDate = dayjs(created_at);
+        const now = dayjs().tz(MANILA_TZ);
+        const createdAtDate = dayjs(created_at).tz(MANILA_TZ);
 
-        // Calculate the difference in time
         const diffInSeconds = now.diff(createdAtDate, "second");
         const diffInMinutes = now.diff(createdAtDate, "minute");
         const diffInHours = now.diff(createdAtDate, "hour");
@@ -64,75 +64,57 @@ export function useFormatDate() {
         }
     };
 
-    const dayRangeDate = (timezone) => {
+    const dayRangeDate = () => {
         dayjs.localeData().weekStart = 1;
-        const date = dayjs();
-        let startDate = date
-            .tz(timezone)
-            .startOf("isoWeek")
-            .format("YYYY-MM-DD 00:00:00");
-        let endDate = date
-            .tz(timezone)
-            .endOf("isoWeek")
-            .format("YYYY-MM-DD 24:59:59");
+        const date = dayjs().tz(MANILA_TZ);
+        let startDate = date.startOf("isoWeek").format("YYYY-MM-DD 00:00:00");
+        let endDate = date.endOf("isoWeek").format("YYYY-MM-DD 24:59:59");
 
         return { start_date: startDate, end_date: endDate };
     };
 
-    const weekRangeDate = (timezone) => {
-        let startDate = dayjs()
-            .tz(timezone)
-            .startOf("month")
-            .format("YYYY-MM-DD 00:00:00");
-        let endDate = dayjs()
-            .tz(timezone)
-            .endOf("month")
-            .format("YYYY-MM-DD 24:59:59");
+    const weekRangeDate = () => {
+        const date = dayjs().tz(MANILA_TZ);
+        let startDate = date.startOf("month").format("YYYY-MM-DD 00:00:00");
+        let endDate = date.endOf("month").format("YYYY-MM-DD 24:59:59");
 
         return { start_date: startDate, end_date: endDate };
     };
 
-    const monthRangeDate = (timezone) => {
-        let startDate = dayjs()
-            .tz(timezone)
-            .startOf("year")
-            .format("YYYY-MM-DD");
-        let endDate = dayjs().tz(timezone).endOf("year").format("YYYY-MM-DD");
+    const monthRangeDate = () => {
+        const date = dayjs().tz(MANILA_TZ);
+        let startDate = date.startOf("year").format("YYYY-MM-DD");
+        let endDate = date.endOf("year").format("YYYY-MM-DD");
 
         return { start_date: startDate, end_date: endDate };
     };
 
     const humanize = (date) => {
-        const humanize = dayjs().to(dayjs(date));
-
-        if (!humanize.endsWith("ago")) {
-            return humanize + " ago";
-        }
-
-        return humanize;
+        const humanized = dayjs().tz(MANILA_TZ).to(dayjs(date).tz(MANILA_TZ));
+        return humanized.endsWith("ago") ? humanized : `${humanized} ago`;
     };
 
-    const isToday = (date) => {
-        return dayjs(date).isToday();
+    const isTodayFn = (date) => {
+        return dayjs(date).tz(MANILA_TZ).isToday();
     };
 
     const isLast24Hour = (date) => {
-        return dayjs().diff(dayjs(date), "hour") < 24;
+        return (
+            dayjs().tz(MANILA_TZ).diff(dayjs(date).tz(MANILA_TZ), "hour") < 24
+        );
     };
 
     const formatDateRange = (date) => {
-        return dayjs(date).format("YYYY/MM/DD");
+        return dayjs(date).tz(MANILA_TZ).format("YYYY/MM/DD");
     };
 
     const formatGraphDates = (date) => {
-        return dayjs(date).format("ddd MMM D YYYY");
+        return dayjs(date).tz(MANILA_TZ).format("ddd MMM D YYYY");
     };
 
     const formatCategoryDates = (date, type) => {
-        if (type === "last_30") {
-            return dayjs(date).format("MMM D");
-        }
-        return dayjs(date).format("MMM YYYY");
+        const d = dayjs(date).tz(MANILA_TZ);
+        return type === "last_30" ? d.format("MMM D") : d.format("MMM YYYY");
     };
 
     return {
@@ -141,7 +123,7 @@ export function useFormatDate() {
         formatDate,
         formatDateTime,
         humanize,
-        isToday,
+        isToday: isTodayFn,
         dayRangeDate,
         weekRangeDate,
         monthRangeDate,

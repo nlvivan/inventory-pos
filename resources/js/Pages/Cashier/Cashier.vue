@@ -264,17 +264,7 @@ const submitOrders = () => {
             >
                 <a-form layout="vertical">
                     <a-form-item label="Cash">
-                        <a-input-number
-                            v-model:value="cash"
-                            class="w-full"
-                            :formatter="
-                                (value) =>
-                                    value
-                                        ? `${parseFloat(value).toFixed(2)}`
-                                        : ''
-                            "
-                            :parser="(value) => value.replace(/[^\d.]/g, '')"
-                        />
+                        <a-input-number v-model:value="cash" class="w-full" />
                     </a-form-item>
                     <a-form-item label="Change">
                         <a-input-number

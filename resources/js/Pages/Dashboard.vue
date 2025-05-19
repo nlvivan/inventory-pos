@@ -92,8 +92,8 @@ const columns = [
     },
 ];
 
-const selectedFilter = ref(props.filters.top_sales_filter ?? "this_month");
-const selectedSalesFilter = ref(props.filters.sales_filter ?? "today");
+const selectedFilter = ref(props?.filters?.top_sales_filter ?? "this_month");
+const selectedSalesFilter = ref(props?.filters?.sales_filter ?? "today");
 
 const options = [
     {
@@ -227,7 +227,7 @@ const formattedDateRange = computed(() => {
                         <a-card title="Product Top Sales" class="mt-2">
                             <a-table
                                 :columns="columns"
-                                :data-source="props.topSales.data"
+                                :data-source="props?.topSales?.data"
                                 :pagination="false"
                                 size="small"
                             >

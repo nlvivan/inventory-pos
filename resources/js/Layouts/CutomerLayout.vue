@@ -40,6 +40,16 @@ const userNavigation = [
     { name: "Settings", href: route("customer.profile.edit"), method: "get" },
     { name: "Sign out", href: route("logout"), method: "post" },
 ];
+
+const showModal = ref(false);
+
+const openModal = () => {
+    showModal.value = true;
+};
+
+const closeModal = () => {
+    showModal.value = false;
+};
 </script>
 
 <template>
@@ -254,13 +264,12 @@ const userNavigation = [
                             >
                                 Useful Links
                             </h2>
-                            <div class="flex flex-col gap-4">
-                                <Link
-                                    href="#"
-                                    class="no-underline text-[#1C486F]"
+                            <div class="flex flex-col gap-4" @click="openModal">
+                                <div
+                                    class="no-underline text-[#1C486F] cursor-pointer"
                                 >
-                                    About Us</Link
-                                >
+                                    About Us
+                                </div>
                                 <Link
                                     href="#"
                                     class="no-underline text-[#1C486F]"
@@ -418,5 +427,52 @@ const userNavigation = [
                 </div>
             </footer>
         </div>
+        <a-modal
+            v-model:open="showModal"
+            :width="800"
+            title="About Us"
+            @ok="closeModal"
+            :footer="false"
+        >
+            <div class="p-6 bg-white rounded-xl shadow-none">
+                <p>
+                    <strong>Welcome to 3 Lito’s Store</strong>, your one-stop
+                    online grocery destination! We are proud to bring
+                    convenience and variety to your doorstep with a wide
+                    selection of everyday essentials from tasty snacks and
+                    pantry staples to instant meals and beverages.
+                </p>
+
+                <p>
+                    Whether you're stocking up for the week or grabbing a few
+                    last-minute items, we make shopping fast, easy, and
+                    hassle-free.
+                </p>
+
+                <p>
+                    At <strong>3 Lito’s Store</strong>, we believe that grocery
+                    shopping should be simple and enjoyable. Our platform is
+                    designed to help you explore and purchase your favorite
+                    products with just a few clicks. We are committed to
+                    providing quality goods, competitive prices, and reliable
+                    service to individuals and families who value both time and
+                    convenience.
+                </p>
+
+                <p>
+                    Driven by our passion for customer satisfaction, we
+                    continuously update our inventory, offer exciting deals, and
+                    ensure a smooth online shopping experience.
+                </p>
+
+                <p class="font-semibold">
+                    3 Lito’s Store — where groceries meet convenience.
+                </p>
+
+                <p class="text-sm">
+                    <span class="font-bold">Mobile Number:</span> 09156207658
+                </p>
+            </div>
+        </a-modal>
     </a-config-provider>
 </template>
