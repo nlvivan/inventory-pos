@@ -23,8 +23,6 @@ class Recaptcha implements ValidationRule
             'response' => $value,
         ])->json();
 
-        dd($response);
-
         if (! $response['success'] && ! $response['score'] > 0.5) {
             $fail('The captcha is incorrect.');
         }
