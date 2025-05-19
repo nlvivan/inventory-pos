@@ -37,7 +37,7 @@ class RegisteredUserController extends Controller
             'middle_name' => 'nullable|string|max:255',
             'email' => 'required|string|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'captcha_token' => [new Recaptcha],
+            // 'captcha_token' => [new Recaptcha],
         ]);
 
         $user = User::create([
