@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Jobs\RegisterNewUserJob;
 use App\Models\User;
 use App\Rules\Recaptcha;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -49,7 +49,7 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ])->assignRole('customer');
 
-        dispatch(new RegisterNewUserJob($user));
+        event(new Registered($user));
 
         Auth::login($user);
 

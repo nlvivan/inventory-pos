@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\SendUserNotificationJob;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -47,7 +46,7 @@ class UserController extends Controller
 
         $user->assignRole($request->role);
 
-        dispatch(new SendUserNotificationJob($user));
+        $user->notify(new \App\Notifications\SendCredsToUserNotification);
 
         return redirect()->back();
     }
