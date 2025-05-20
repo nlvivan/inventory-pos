@@ -102,7 +102,7 @@
         <!-- Prepared By Section -->
         <div class="prepared-by">
             <p>Prepared</p> 
-            <p class="name">John Carlo Diano</p> 
+            <p class="name">Mae Baybayab</p> 
             <p class="role">Owner</p>
         </div>
 

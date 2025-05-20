@@ -47,6 +47,23 @@
         .total {
             text-align: right;
         }
+        
+        .prepared-by {
+            text-align: left; /* Align the content to the left */
+            margin-top: 30px;
+            font-size: 14px;
+            font-weight: normal;
+        }
+        .prepared-by p {
+            margin: 5px 0;
+        }
+        .prepared-by .name {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        .prepared-by .role {
+            font-weight: normal;
+        }
     </style>
 </head>
 <body>
@@ -82,6 +99,12 @@
             @endforeach
            
         </table>
+         <div class="prepared-by">
+            <p>Prepared</p> 
+            <p class="name">Mae Baybayab</p> 
+            <p class="role">Owner</p>
+        </div>
+
 
         <!-- Footer -->
         <p style="text-align: center; margin-top: 20px;">Thank you for your business!</p>
