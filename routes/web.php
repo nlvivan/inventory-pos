@@ -36,7 +36,7 @@ Route::get('/categories/{category}/products', [HomepageController::class, 'produ
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -58,7 +58,7 @@ Route::middleware('auth')->group(function () {
             Route::resource('production-batches', ProductionBatchController::class);
             Route::get('/sales-reports', [AdminDashboardController::class, 'salesReport'])->name('admin.dashboard.sales-report');
             Route::get('/dashboard/print-pdf', [AdminDashboardController::class, 'printPdf'])->name('admin.dashboard.print-pdf');
-            Route::get('/dashboard', [AdminDashboardController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('admin.dashboard');
+            Route::get('/dashboard', [AdminDashboardController::class, 'dashboard'])->middleware(['auth'])->name('admin.dashboard');
             Route::get('/dashboard/sales', [AdminDashboardController::class, 'getSalesData'])->name('admin.dashboard.sales');
             Route::get('/dashboard/sales/export', [AdminDashboardController::class, 'getOrderItems'])->name('admin.dashboard.order-items.export');
             Route::get('/users/print-pdf', [UserController::class, 'printPdf'])->name('users.print-pdf');
@@ -84,7 +84,7 @@ Route::middleware('auth')->group(function () {
 
     });
 
-    Route::group(['middleware' => ['role:admin|cashier|customer', 'verified']], function () {
+    Route::group(['middleware' => ['role:admin|cashier|customer']], function () {
         Route::get('products/{product}/view-details', [HomepageController::class, 'productDetails'])->name('home.product.details');
         Route::get('/carts', [CartController::class, 'index'])->name('cart.index');
         Route::post('/carts', [CartController::class, 'store'])->name('cart.store');
