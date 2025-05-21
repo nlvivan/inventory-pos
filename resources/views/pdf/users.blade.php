@@ -99,7 +99,7 @@
 
           <div class="prepared-by">
             <p>Prepared</p> 
-            <p class="name">Mae Baybayab</p> 
+            <p class="name">Mae Baybayan</p> 
             <p class="role">Owner</p>
         </div>
 
