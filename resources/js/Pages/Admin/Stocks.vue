@@ -308,7 +308,7 @@ watchDebounced(
                                     <img
                                         class="h-16 w-16 rounded-full"
                                         :src="
-                                            record.product.image_url ??
+                                            record.product?.image_url ??
                                             '/storage/IMG_4359.jpg'
                                         "
                                     />

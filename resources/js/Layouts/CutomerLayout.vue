@@ -19,11 +19,10 @@ import {
     MenuItems,
 } from "@headlessui/vue";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/vue/24/outline";
-import { usePage } from "@inertiajs/vue3";
-
-const search = ref("");
+import { router, usePage } from "@inertiajs/vue3";
 
 const page = computed(() => usePage());
+const search = ref(page.value.props?.filters?.search ?? "");
 
 const user = {
     name: page.value.props?.auth?.user?.name,
@@ -49,6 +48,20 @@ const openModal = () => {
 
 const closeModal = () => {
     showModal.value = false;
+};
+
+const onSearch = () => {
+    router.reload(
+        {
+            data: {
+                search: search.value,
+            },
+        },
+        {
+            replace: true,
+            preserveState: true,
+        }
+    );
 };
 </script>
 

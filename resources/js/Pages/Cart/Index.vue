@@ -21,7 +21,7 @@ const props = defineProps({
 
 const totalPrice = computed(() => {
     return props.records.data.reduce((acc, curr) => {
-        return acc + curr.product.price * curr.quantity;
+        return acc + curr.product?.price * curr.quantity;
     }, 0);
 });
 
@@ -102,7 +102,7 @@ const removeCart = (record) => {
                                             </a-button>
                                             <img
                                                 :src="
-                                                    record.product.image_url ??
+                                                    record.product?.image_url ??
                                                     '/storage/IMG_4359.jpg'
                                                 "
                                                 class="w-24 h-24"
@@ -110,11 +110,11 @@ const removeCart = (record) => {
                                             />
                                         </div>
                                         <p class="mt-2 ml-4 font-semibold">
-                                            {{ record.product.name }}
+                                            {{ record.product?.name }}
                                         </p>
                                     </td>
                                     <td class="py-2 px-4 text-left">
-                                        ₱ {{ record.product.price }}
+                                        ₱ {{ record.product?.price }}
                                     </td>
                                     <td class="py-2 px-4 text-left">
                                         <form class="max-w-xs">
@@ -184,7 +184,7 @@ const removeCart = (record) => {
                                                 ₱
                                                 {{
                                                     record.quantity *
-                                                    record.product.price
+                                                    record.product?.price
                                                 }}
                                             </p>
                                         </div>

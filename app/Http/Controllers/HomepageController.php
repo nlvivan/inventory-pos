@@ -25,14 +25,16 @@ class HomepageController extends Controller
         return Inertia::render('Homepage/Index', [
             'products' => ProductResource::collection($products),
             'categories' => CategoryResource::collection($categories),
+            'filters' => $request->only('search'),
         ]);
     }
 
-    public function productDetails(Product $product)
+    public function productDetails(Request $request, Product $product)
     {
 
         $products = Product::query()
             ->whereNot('id', $product->id)
+            ->search($request->search)
             ->where('category_id', $product->category_id)
             ->with(['category', 'productionBatch', 'stock'])
             ->latest()
@@ -42,6 +44,7 @@ class HomepageController extends Controller
         return Inertia::render('Homepage/ProductDetails', [
             'products' => ProductResource::collection($products),
             'product' => ProductResource::make($product->load(['category', 'stock'])),
+            'filters' => $request->only('search'),
         ]);
     }
 
