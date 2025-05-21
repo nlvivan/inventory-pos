@@ -47,7 +47,7 @@ class UserController extends Controller
 
         $user->assignRole($request->role);
 
-        // defer($user->notify(new \App\Notifications\SendCredsToUserNotification);
+        $user->notify(new \App\Notifications\SendCredsToUserNotification);
 
         return redirect()->back();
     }
