@@ -19,7 +19,7 @@ class UserController extends Controller
 
         $records = User::query()
             ->search($request->search)
-            ->with(['roles'])
+            ->with('roles:id,name') // avoid loading all pivot data
             ->role(['cashier', 'customer'])
             ->latest()
             ->paginate($request->per_page);
