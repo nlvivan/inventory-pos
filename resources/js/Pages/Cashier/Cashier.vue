@@ -230,7 +230,7 @@ const submitOrders = () => {
                                             </p>
                                             <p class="text-[#2369A6]">
                                                 Stock:
-                                                {{ product?.stock?.stock }}
+                                                {{ product?.total_stocks }}
                                             </p>
                                             <a-button
                                                 type="primary"

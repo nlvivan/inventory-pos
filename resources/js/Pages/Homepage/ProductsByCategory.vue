@@ -13,7 +13,7 @@ const props = defineProps({
 });
 
 const current = ref(props.records.meta.current_page);
-const search = ref(props.filters.search)
+const search = ref(props.filters.search);
 
 const onChange = (page) => {
     router.reload(
@@ -75,7 +75,7 @@ const onChange = (page) => {
                                         ₱ {{ product.price }}
                                     </span>
                                     <p class="text-sm text-[#1C486F] mt-2">
-                                        Stock: {{ product.stock.stock }}
+                                        Stock: {{ product?.total_stock }}
                                     </p>
                                 </div>
                                 <div class="mt-4 w-full p-2 px-12">

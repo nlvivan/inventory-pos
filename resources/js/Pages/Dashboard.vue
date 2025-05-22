@@ -29,6 +29,8 @@ const props = defineProps({
     filters: Object,
 });
 
+console.log(props.productNearlyOutOfStock);
+
 const dateRange = ref(
     props.filters?.from
         ? [dayjs(props.filters?.from), dayjs(props.filters?.to)]
@@ -41,17 +43,17 @@ const dateRange = ref(
 const nearlyExpiredProductsColumns = [
     {
         title: "Product Name",
-        dataIndex: "name",
+        dataIndex: ["product", "name"],
         key: "name",
     },
     {
         title: "Batch Number",
-        dataIndex: ["production_batch", "batch_number"],
+        dataIndex: "batch_number",
         key: "expiry_date",
     },
     {
         title: "Expiry Date",
-        dataIndex: ["production_batch", "expiration_date"],
+        dataIndex: "expiration_date",
         key: "expiry_date",
     },
 ];
@@ -59,18 +61,13 @@ const nearlyExpiredProductsColumns = [
 const productNearlyOutOfStockColumns = [
     {
         title: "Product Name",
-        dataIndex: ["product", "name"],
-        key: "name",
-    },
-    {
-        title: "Batch Number",
-        dataIndex: ["product", "production_batch", "batch_number"],
+        dataIndex: "name",
         key: "name",
     },
     {
         title: "Stock",
-        dataIndex: "stock",
-        key: "stock",
+        dataIndex: "stocks_sum_stock",
+        key: "stocks_sum_stock",
     },
 ];
 
@@ -175,6 +172,31 @@ const formattedDateRange = computed(() => {
         <Head title="Dashboard" />
         <div class="">
             <div class="">
+                <OrderData class="mt-6" />
+                <div class="grid grid-cols-2 gap-2 mt-2">
+                    <div>
+                        <a-card title="Nearly Expired Products">
+                            <a-table
+                                :pagination="false"
+                                :columns="nearlyExpiredProductsColumns"
+                                :data-source="props.nearlyExpiredProducts"
+                                :scroll="{ y: 1500 }"
+                                size="small"
+                            ></a-table>
+                        </a-card>
+                    </div>
+                    <div>
+                        <a-card title="Nearly Out of Stock Products">
+                            <a-table
+                                :pagination="false"
+                                :columns="productNearlyOutOfStockColumns"
+                                :data-source="props.productNearlyOutOfStock"
+                                :scroll="{ y: 1500 }"
+                                size="small"
+                            ></a-table>
+                        </a-card>
+                    </div>
+                </div>
                 <div class="mt-2 bg-white p-1.5" :title="false">
                     <div class="flex justify-between items-center mb-2">
                         <!-- Date Range Picker centered -->
@@ -214,15 +236,18 @@ const formattedDateRange = computed(() => {
                     </div>
 
                     <div class="grid grid-cols-2 gap-2">
-                        <a-card title="Total Sales" class="mt-2">
-                            <div
-                                class="flex justify-center items-center text-center w-full h-40"
-                            >
-                                <h1 class="text-2xl font-semibold">
-                                    ₱ {{ props.totalSales }}
-                                </h1>
-                            </div>
-                        </a-card>
+                        <!-- Centered Card Wrapper -->
+                        <div class="flex justify-center items-center">
+                            <a-card title="Total Sales" class="mt-2 w-3/4">
+                                <div
+                                    class="flex justify-center items-center text-center w-full h-40"
+                                >
+                                    <h1 class="text-2xl font-semibold">
+                                        ₱ {{ props.totalSales }}
+                                    </h1>
+                                </div>
+                            </a-card>
+                        </div>
 
                         <a-card title="Product Top Sales" class="mt-2">
                             <a-table
@@ -256,32 +281,6 @@ const formattedDateRange = computed(() => {
                     </div>
                 </div>
             </div>
-
-            <div class="grid grid-cols-2 gap-2 mt-2">
-                <div>
-                    <a-card title="Nearly Expired Products">
-                        <a-table
-                            :pagination="false"
-                            :columns="nearlyExpiredProductsColumns"
-                            :data-source="props.nearlyExpiredProducts"
-                            :scroll="{ y: 1500 }"
-                            size="small"
-                        ></a-table>
-                    </a-card>
-                </div>
-                <div>
-                    <a-card title="Nearly Out of Stock Products">
-                        <a-table
-                            :pagination="false"
-                            :columns="productNearlyOutOfStockColumns"
-                            :data-source="props.productNearlyOutOfStock"
-                            :scroll="{ y: 1500 }"
-                            size="small"
-                        ></a-table>
-                    </a-card>
-                </div>
-            </div>
-            <OrderData class="mt-6" />
         </div>
     </AuthenticatedLayout>
 </template>

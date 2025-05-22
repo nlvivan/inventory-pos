@@ -24,14 +24,14 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function productionBatch()
+    public function productionBatches(): HasMany
     {
-        return $this->belongsTo(ProductionBatch::class);
+        return $this->hasMany(ProductionBatch::class);
     }
 
-    public function stock(): HasOne
+    public function stocks(): HasMany
     {
-        return $this->hasOne(Stock::class);
+        return $this->hasMany(Stock::class);
     }
 
     public function productReturn(): HasOne

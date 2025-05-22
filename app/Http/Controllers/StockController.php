@@ -16,7 +16,7 @@ class StockController extends Controller
         ]);
 
         $products = Stock::query()
-            ->with(['product'])
+            ->with(['product', 'productionBatch'])
             ->search($request->search)
             ->paginate($request->per_page);
 

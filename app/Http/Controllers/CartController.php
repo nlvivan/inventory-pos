@@ -27,9 +27,9 @@ class CartController extends Controller
             'quantity' => ['required', 'integer', 'gte:1'],
         ]);
 
-        $product = Product::find($data['product_id']);
+        $product = Product::withSum('stocks as total_stocks', 'stock')->find($data['product_id']);
 
-        if ($product->stock?->stock < $data['quantity']) {
+        if ($product->total_stocks < $data['quantity']) {
             abort(422, "{$product->name} is not enough stock");
         }
 
@@ -55,9 +55,9 @@ class CartController extends Controller
         ]);
 
         foreach ($data['records'] as $index => $item) {
-            $product = Product::find($item['product_id']);
+            $product = Product::withSum('stocks as total_stocks', 'stock')->find($item['product_id']);
 
-            if ($product->stock?->stock < $item['quantity']) {
+            if ($product->total_stocks < $item['quantity']) {
                 abort(422, "{$product->name} is not enough stock");
             }
         }

@@ -6,6 +6,7 @@ use App\Models\Notification;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
 class NotifyUserProductLowStock extends Command
 {
@@ -17,34 +18,23 @@ class NotifyUserProductLowStock extends Command
     {
         $users = User::role('admin')->get();
 
-        Product::with(['stock', 'productionBatch'])
-            ->whereHas('stock', function ($query) {
-                $query->whereColumn('stock', '<=', 'critical_stock');
-            })
-            ->chunk(100, function ($products) use ($users) {
-                logger($products);
-                foreach ($products as $product) {
-                    // Defensive check (in case of missing relationships)
-                    if (! $product->stock || ! $product->productionBatch) {
-                        continue;
-                    }
-
+        Product::withSum('stocks', 'stock')
+            ->having('stocks_sum_stock', '<', DB::raw('critical_stock'))
+            ->each(function (Product $product) use ($users) {
+                $users->each(function (User $user) use ($product) {
                     $data = [
-                        'batch_number' => $product->productionBatch->batch_number,
+
                         'product_name' => $product->name,
                         'product_id' => $product->id,
-                        'remaining_stock' => $product->stock->stock,
+                        'remaining_stock' => $product->stocks_sum_stock,
                     ];
-
-                    foreach ($users as $user) {
-                        Notification::create([
-                            'type' => 'low_stock',
-                            'user_id' => $user->id,
-                            'data' => $data,
-                            'read' => false,
-                        ]);
-                    }
-                }
+                    Notification::create([
+                        'type' => 'low_stock',
+                        'user_id' => $user->id,
+                        'data' => $data,
+                        'read' => false,
+                    ]);
+                });
             });
     }
 }

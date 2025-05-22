@@ -6,10 +6,11 @@ use App\Http\Resources\TopSalesResource;
 use App\Models\Order;
 use App\Models\OrderItems;
 use App\Models\Product;
-use App\Models\Stock;
+use App\Models\ProductionBatch;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Spatie\SimpleExcel\SimpleExcelWriter;
 
@@ -53,18 +54,13 @@ class AdminDashboardController extends Controller
         $startOfMonth = date('Y-m-01');
         $endOfMonth = date('Y-m-t');
 
-        $nearlyExpiredProducts = Product::query()
-            ->with('productionBatch')
-            ->whereHas('productionBatch', function ($query) use ($startOfMonth, $endOfMonth) {
-                $query->whereBetween('expiration_date', [$startOfMonth, $endOfMonth]);
-            })
+        $nearlyExpiredProducts = ProductionBatch::query()
+            ->with(['product'])
+            ->whereBetween('expiration_date', [$startOfMonth, $endOfMonth])
             ->get();
 
-        $productNearlyOutOfStock = Stock::query()
-            ->with(['product', 'product.productionBatch'])
-            ->whereNotNull('stock')
-            ->whereNotNull('critical_stock')
-            ->whereColumn('stock', '<', 'critical_stock')
+        $productsInCriticalStock = Product::withSum('stocks', 'stock')
+            ->having('stocks_sum_stock', '<', DB::raw('critical_stock'))
             ->get();
 
         $totalSales = number_format((float) $totalSales, 2);
@@ -74,7 +70,7 @@ class AdminDashboardController extends Controller
             'topSales' => TopSalesResource::collection($topSales),
             'filters' => $request->only(['top_sales_filter', 'sales_filter']),
             'nearlyExpiredProducts' => $nearlyExpiredProducts,
-            'productNearlyOutOfStock' => $productNearlyOutOfStock,
+            'productNearlyOutOfStock' => $productsInCriticalStock,
             'filters' => $request->only(['from', 'to']),
         ]);
     }

@@ -14,7 +14,8 @@ class HomepageController extends Controller
     public function index(Request $request)
     {
         $products = Product::query()
-            ->with(['category', 'productionBatch', 'stock'])
+            ->with(['category'])
+            ->withSum('stocks as total_stock', 'stock')
             ->search($request->search)
             ->latest()
             ->limit(20)
@@ -35,15 +36,16 @@ class HomepageController extends Controller
         $products = Product::query()
             ->whereNot('id', $product->id)
             ->search($request->search)
+            ->withSum('stocks as total_stock', 'stock')
             ->where('category_id', $product->category_id)
-            ->with(['category', 'productionBatch', 'stock'])
+            ->with(['category'])
             ->latest()
             ->limit(20)
             ->get();
 
         return Inertia::render('Homepage/ProductDetails', [
             'products' => ProductResource::collection($products),
-            'product' => ProductResource::make($product->load(['category', 'stock'])),
+            'product' => ProductResource::make($product->load(['category'])->loadSum('stocks as total_stock', 'stock')),
             'filters' => $request->only('search'),
         ]);
     }
@@ -52,7 +54,8 @@ class HomepageController extends Controller
     {
         $productsByCategory = $category->products()
             ->search($request->search)
-            ->with(['category', 'productionBatch', 'stock'])
+            ->withSum('stocks as total_stock', 'stock')
+            ->with(['category'])
             ->latest()->paginate(25);
 
         return Inertia::render('Homepage/ProductsByCategory', [

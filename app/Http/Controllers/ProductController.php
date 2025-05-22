@@ -20,17 +20,16 @@ class ProductController extends Controller
         ]);
 
         $products = Product::query()
-            ->with(['category', 'productionBatch', 'stock'])
+            ->with(['category'])
+            ->withSum('stocks as total_stock', 'stock')
             ->search($request->search)
             ->paginate($request->per_page);
 
         $categories = Category::query()->get(['id', 'name']);
-        $productionBatches = ProductionBatch::query()->get(['id', 'batch_number', 'production_date', 'expiration_date']);
 
         return Inertia::render('Admin/Products', [
             'records' => ProductResource::collection($products),
             'categories' => $categories,
-            'productionBatches' => $productionBatches,
             'filters' => $request->only(['search']),
         ]);
     }
@@ -66,11 +65,11 @@ class ProductController extends Controller
         $data = $request->validate([
             'image_url' => ['nullable', 'mimes:png,jpg,jpeg,webp', 'max:10240'],
             'category_id' => ['required', 'integer', 'exists:categories,id'],
-            'production_batch_id' => ['required', 'integer', 'exists:production_batches,id'],
             'name' => ['required', 'string', 'max:255'],
             'notes' => ['nullable', 'max:255'],
             'price' => ['required', 'numeric'],
             'sku' => ['required', 'string', 'max:255'],
+            'critical_stock' => ['nullable', 'numeric'],
         ]);
 
         if ($request->hasFile('image_url')) {
@@ -87,11 +86,11 @@ class ProductController extends Controller
         $data = $request->validate([
             'image_url' => ['nullable', 'mimes:png,jpg,jpeg', 'max:10240'],
             'category_id' => ['required', 'integer', 'exists:categories,id'],
-            'production_batch_id' => ['required', 'integer'],
             'name' => ['required', 'string', 'max:255'],
             'notes' => ['nullable', 'max:255'],
             'price' => ['required', 'numeric'],
             'sku' => ['required', 'string', 'max:255'],
+            'critical_stock' => ['nullable', 'integer'],
         ]);
 
         if ($request->hasFile('image_url')) {

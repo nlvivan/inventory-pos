@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Notification;
-use App\Models\Product;
+use App\Models\ProductionBatch;
 use App\Models\User;
 use Illuminate\Console\Command;
 
@@ -34,21 +34,17 @@ class NotifyUserForExpiryDateCommand extends Command
         $startOfMonth = date('Y-m-01');
         $endOfMonth = date('Y-m-t');
 
-        $nearlyExpiredProducts = Product::query()
-            ->with('productionBatch')
-            ->whereHas('productionBatch', function ($query) use ($startOfMonth, $endOfMonth) {
-                $query->whereBetween('expiration_date', [$startOfMonth, $endOfMonth]);
-            })
-            ->each(function (Product $product) use ($users) {
+        ProductionBatch::query()
+            ->with(['product'])
+            ->whereBetween('expiration_date', [$startOfMonth, $endOfMonth])
+            ->each(function (ProductionBatch $productionBatch) use ($users) {
 
-                logger($product->productionBatch);
-
-                $users->each(function (User $user) use ($product) {
+                $users->each(function (User $user) use ($productionBatch) {
                     $data = [
-                        'batch_number' => $product->productionBatch->batch_number,
-                        'product_name' => $product->name,
-                        'product_id' => $product->id,
-                        'expiry_date' => $product->productionBatch->expiration_date,
+                        'batch_number' => $productionBatch->batch_number,
+                        'product_name' => $productionBatch->product->name,
+                        'product_id' => $productionBatch->product->id,
+                        'expiry_date' => $productionBatch->expiration_date,
                     ];
 
                     // Create a notification for each admin

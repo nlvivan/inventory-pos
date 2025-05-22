@@ -135,7 +135,7 @@ const email = ref("");
                                 ₱ {{ product.price }}
                             </span>
                             <p class="text-sm text-blue-900">
-                                Stock: {{ product?.stock?.stock }}
+                                Stock: {{ product?.total_stock }}
                             </p>
                         </div>
 

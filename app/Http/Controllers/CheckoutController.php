@@ -38,9 +38,9 @@ class CheckoutController extends Controller
         $carts = auth()->user()->carts()->get();
 
         foreach ($carts as $index => $item) {
-            $product = Product::find($item['product_id']);
+            $product = Product::withSum('stocks as total_stocks', 'stock')->find($item['product_id']);
 
-            if ($product->stock?->stock < $item['quantity']) {
+            if ($product->total_stocks < $item['quantity']) {
                 abort(422, "{$product->name} is not enough stock");
             }
         }
@@ -69,9 +69,21 @@ class CheckoutController extends Controller
                 'total_price' => $product->price * $orderItem['quantity'],
             ]);
 
-            $product->stock->update(
-                ['stock' => $product->stock->stock - $orderItem['quantity']]
-            );
+            $productStock = $product->stocks()->where('stock', '>', 0)->get();
+
+            $remainingQuantity = $orderItem['quantity'];
+            foreach ($productStock as $stock) {
+
+                if ($remainingQuantity <= 0) {
+                    break;
+                }
+                $deductQuantity = min($stock->stock, $remainingQuantity);
+                $stock->stock -= $deductQuantity;
+                $stock->save();
+
+                $remainingQuantity -= $deductQuantity;
+
+            }
         }
 
         // Artisan::call('app:notify-user-product-low-stock');

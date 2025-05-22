@@ -19,7 +19,8 @@ class OrderController extends Controller
         $data = [];
         if ($request->search) {
             $products = Product::query()
-                ->with(['stock', 'category'])
+                ->withSum('stocks as total_stocks', 'stock')
+                ->with(['category'])
                 ->search($request->search)
                 ->get();
 
@@ -42,9 +43,9 @@ class OrderController extends Controller
         ]);
 
         foreach ($data['orderItems'] as $index => $item) {
-            $product = Product::find($item['id']);
+            $product = Product::withSum('stocks as total_stocks', 'stock')->find($item['id']);
 
-            if ($product->stock?->stock < $item['quantity']) {
+            if ($product->total_stocks < $item['quantity']) {
                 abort(422, "{$product->name} is not enough stock");
             }
         }
@@ -70,7 +71,6 @@ class OrderController extends Controller
 
         foreach ($data['orderItems'] as $orderItem) {
             $product = Product::find($orderItem['id']);
-
             OrderItems::create([
                 'order_id' => $order->id,
                 'product_id' => $orderItem['id'],
@@ -78,9 +78,23 @@ class OrderController extends Controller
                 'total_price' => $product->price * $orderItem['quantity'],
             ]);
 
-            $product->stock->update(
-                ['stock' => $product->stock->stock - $orderItem['quantity']]
-            );
+            // get Product Stock
+
+            $productStock = $product->stocks()->where('stock', '>', 0)->get();
+
+            $remainingQuantity = $orderItem['quantity'];
+            foreach ($productStock as $stock) {
+
+                if ($remainingQuantity <= 0) {
+                    break;
+                }
+                $deductQuantity = min($stock->stock, $remainingQuantity);
+                $stock->stock -= $deductQuantity;
+                $stock->save();
+
+                $remainingQuantity -= $deductQuantity;
+
+            }
         }
 
         $order->status = 'paid';

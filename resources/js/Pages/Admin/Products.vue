@@ -18,7 +18,6 @@ const props = defineProps({
     records: Object,
     filters: Object,
     categories: Array,
-    productionBatches: Array,
 });
 
 const imageUrl = ref("");
@@ -27,13 +26,13 @@ const form = useForm({
     id: "",
     image_url: "",
     category_id: "",
-    production_batch_id: "",
     name: "",
     notes: "",
     price: "",
     sku: "",
     expiry_date: "",
     has_image_url: false,
+    critical_stock: "",
 });
 
 const handleChange = (info) => {
@@ -80,8 +79,8 @@ const columns = [
     },
     {
         title: "Stock",
-        dataIndex: "stock",
-        key: "stock",
+        dataIndex: "total_stock",
+        key: "total_stock",
     },
     {
         title: "Notes",
@@ -188,31 +187,16 @@ const updateLoading = ref(false);
 
 const updateData = () => {
     updateLoading.value = true;
-    router.post(
-        route("products.update", form.id),
-        {
-            _method: "put",
-            name: form.name,
-            production_batch_id: form.production_batch_id,
-            image_url: form.image_url,
-            notes: form.notes,
-            category_id: form.category_id,
-            price: form.price,
-            sku: form.sku,
-            expiry_date: form.expiry_date,
-            has_image_url: form.has_image_url,
+    form.post(route("products.update", form.id), {
+        onSuccess: () => {
+            closeCreateModal();
+            message.success("Product Updated Sucessfully!");
+            form.reset();
+            imageUrl.value = "";
+            fileList.value = [];
+            updateLoading.value = false;
         },
-        {
-            onSuccess: () => {
-                closeCreateModal();
-                message.success("Product Updated Sucessfully!");
-                form.reset();
-                imageUrl.value = "";
-                fileList.value = [];
-                updateLoading.value = false;
-            },
-        }
-    );
+    });
 };
 
 const deleteData = () => {
@@ -236,12 +220,12 @@ const editData = (data) => {
     isEdit.value = true;
     form.id = data.id;
     form.category_id = data.category_id;
-    form.production_batch_id = data.production_batch_id;
     form.name = data.name;
     form.notes = data.notes;
     form.price = data.price;
     form.sku = data.sku;
     form.expiry_date = data.expiry_date;
+    form.critical_stock = data.critical_stock;
     expiryDate.value = dayjs(data.expiry_date);
 };
 
@@ -358,7 +342,7 @@ const viewProductionBatch = (record) => {
                                 </template>
                                 <template v-if="column.dataIndex === 'action'">
                                     <div class="flex gap-2">
-                                        <a-tooltip title="Add Stock">
+                                        <!-- <a-tooltip title="Add Stock">
                                             <a-button
                                                 @click="addStock(record)"
                                                 shape="circle"
@@ -367,24 +351,24 @@ const viewProductionBatch = (record) => {
                                                     <AppstoreAddOutlined />
                                                 </template>
                                             </a-button>
-                                        </a-tooltip>
+                                        </a-tooltip> -->
                                         <a-tooltip
-                                            title="View Production Batch"
+                                            title="View Production Batchs"
                                         >
-                                            <a-button
-                                                :disabled="
-                                                    record.production_batch_id ===
-                                                    null
+                                            <Link
+                                                :href="
+                                                    route(
+                                                        'products.production-batch',
+                                                        record.id
+                                                    )
                                                 "
-                                                @click="
-                                                    viewProductionBatch(record)
-                                                "
-                                                shape="circle"
                                             >
-                                                <template #icon>
-                                                    <EyeOutlined />
-                                                </template>
-                                            </a-button>
+                                                <a-button shape="circle">
+                                                    <template #icon>
+                                                        <EyeOutlined />
+                                                    </template>
+                                                </a-button>
+                                            </Link>
                                         </a-tooltip>
                                         <a-tooltip title="Edit">
                                             <a-button
@@ -475,7 +459,7 @@ const viewProductionBatch = (record) => {
                         </a-form-item>
                     </div>
                     <div>
-                        <a-form-item
+                        <!-- <a-form-item
                             label="Production Batch"
                             :validate-status="
                                 form.errors.production_batch_id ? 'error' : null
@@ -501,7 +485,7 @@ const viewProductionBatch = (record) => {
                                 "
                                 :filter-option="filterOption"
                             />
-                        </a-form-item>
+                        </a-form-item> -->
                         <a-form-item
                             label="Category"
                             :validate-status="
@@ -559,6 +543,19 @@ const viewProductionBatch = (record) => {
                                 :min="0"
                             />
                         </a-form-item>
+                        <a-form-item
+                            label="Critical Stock"
+                            :validate-status="
+                                form.errors.critical_stock ? 'error' : null
+                            "
+                            :help="form.errors.critical_stock"
+                        >
+                            <a-input-number
+                                style="width: 100%"
+                                v-model:value="form.critical_stock"
+                                :min="0"
+                            />
+                        </a-form-item>
                         <!-- <a-form-item
                             label="Expiry Date"
                             :validate-status="
@@ -587,7 +584,7 @@ const viewProductionBatch = (record) => {
                                 <a-button
                                     type="primary"
                                     htmlType="submit"
-                                    :loading="form.processing || updateLoading"
+                                    :loading="form.processing"
                                     >{{
                                         isEdit ? "Update" : "Submit"
                                     }}</a-button

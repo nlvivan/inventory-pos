@@ -71,14 +71,14 @@ const columns = [
         key: "name",
     },
     {
+        title: "Batch Number",
+        dataIndex: ["production_batch", "batch_number"],
+        key: "batch_number",
+    },
+    {
         title: "Stock",
         dataIndex: "stock",
         key: "stock",
-    },
-    {
-        title: "Critical Stock",
-        dataIndex: "critical_stock",
-        key: "critical_stock",
     },
     {
         title: "Action",
@@ -331,7 +331,7 @@ watchDebounced(
                                                 </template>
                                             </a-button>
                                         </a-tooltip>
-                                        <a-tooltip title="Edit">
+                                        <!-- <a-tooltip title="Edit">
                                             <a-button
                                                 @click="editData(record)"
                                                 shape="circle"
@@ -340,7 +340,7 @@ watchDebounced(
                                                     <EditOutlined />
                                                 </template>
                                             </a-button>
-                                        </a-tooltip>
+                                        </a-tooltip> -->
                                     </div>
                                 </template>
                             </template>

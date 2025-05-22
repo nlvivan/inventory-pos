@@ -1,81 +1,56 @@
 <script setup>
-import { Head, useForm, router, usePage } from "@inertiajs/vue3";
+import { Head, useForm } from "@inertiajs/vue3";
 import { ref, computed } from "vue";
+import { router, usePage } from "@inertiajs/vue3";
 import { watchDebounced } from "@vueuse/core";
 import { message } from "ant-design-vue";
 import {
     EditOutlined,
     DeleteOutlined,
-    LoadingOutlined,
-    PlusOutlined,
     AppstoreAddOutlined,
 } from "@ant-design/icons-vue";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import dayjs from "dayjs";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 
 const props = defineProps({
+    product: Object,
     records: Object,
     filters: Object,
-    categories: Array,
-    productionBatches: Array,
-    products: Array,
 });
 
-const imageUrl = ref("");
-const fileList = ref([]);
 const form = useForm({
-    id: "",
-    product_id: "",
-    production_batch_id: "",
-    count: "",
-    reason: "",
+    batch_number: "",
+    production_date: "",
+    expiration_date: "",
+    stock: "",
 });
-
-const handleChange = (info) => {
-    form.image_url = info.file;
-    form.has_image_url = true;
-    imageUrl.value = window.URL.createObjectURL(info.file);
-    loading.value = false;
-};
-
-function removeImage() {
-    imageUrl.value = "";
-    form.image_url = "";
-    form.has_image_url = false;
-    fileList.value = [];
-}
-
-const expiryDate = ref(null);
-
-const handleChangeDate = (value, dateString) => {
-    console.log(value);
-    form.expiry_date = value.format("YYYY-MM-DD HH:mm");
-};
-
-function filterOption(input, option) {
-    return String(option.label).toLowerCase().indexOf(input.toLowerCase()) >= 0;
-}
 
 const columns = [
     {
-        title: "Name",
-        dataIndex: ["product", "name"],
-        key: "name",
-    },
-    {
         title: "Batch Number",
-        dataIndex: ["product", "production_batch", "batch_number"],
-        key: "bacth_number",
+        dataIndex: "batch_number",
+        key: "batch_number",
     },
     {
-        title: "Stock return",
-        dataIndex: "count",
-        key: "count",
+        title: "Production Date",
+        dataIndex: "production_date",
+        key: "production_date",
     },
     {
-        title: "Reason",
-        dataIndex: "reason",
-        key: "reason",
+        title: "Expiration Date",
+        dataIndex: "expiration_date",
+        key: "expiration_date",
+    },
+    {
+        title: "Stock",
+        dataIndex: ["stock", "stock"],
+        key: "stock",
+    },
+    {
+        title: "Action",
+        dataIndex: "action",
+        key: "action",
+        class: "w-1 text-center",
     },
 ];
 
@@ -110,9 +85,19 @@ const cancelDeleteData = () => {
     visibleDeleteConfirmation.value = false;
 };
 
+const generateProductionBatchNumber = computed(() => {
+    const now = new Date();
+
+    const datePart = now.toISOString().slice(0, 10).replace(/-/g, ""); // YYYYMMDD
+    const randomPart = Math.floor(1000 + Math.random() * 9000); // 4-digit random number
+
+    return `${props.product?.name}-${datePart}-${randomPart}`;
+});
+
 const showCreateModal = () => {
     form.errors = {};
     form.reset();
+    form.batch_number = generateProductionBatchNumber.value;
     isEdit.value = false;
     isCreateModalVisible.value = true;
 };
@@ -120,7 +105,9 @@ const showCreateModal = () => {
 const closeCreateModal = () => {
     form.errors = {};
     form.reset();
-    expiryDate.value = null;
+
+    productionDate.value = null;
+    expirationDate.value = null;
     isCreateModalVisible.value = false;
 };
 
@@ -143,69 +130,37 @@ const handleTableChange = (event) => {
     );
 };
 
-const onProductChange = (value) => {
-    console.log(value);
-};
-
 const submitForm = () => {
-    form.post(route("product-returns.store"), {
-        onSuccess: () => {
-            closeCreateModal();
-            message.success("Product Return Created Sucessfully!");
-        },
-    });
+    if (isEdit.value) {
+        updateData();
+    } else {
+        createData();
+    }
 };
-
-const productBatches = computed(() => {
-    if (!form.product_id) return [];
-
-    return props.products
-        .find((product) => product.id === form.product_id)
-        ?.production_batches.map((productBatch) => {
-            return {
-                label: productBatch.batch_number,
-                value: productBatch.id,
-            };
-        });
-});
 
 const createData = () => {
-    form.post(route("products.store"), {
+    form.post(route("products.production-batch.store", props.product.id), {
         preserveScroll: false,
         preserveState: true,
         onSuccess: () => {
             closeCreateModal();
-            message.success("Product Created Sucessfully!");
+            message.success("Production Batch Created Sucessfully!");
         },
     });
 };
 
-const updateLoading = ref(false);
-
 const updateData = () => {
-    updateLoading.value = true;
-    router.post(
-        route("products.update", form.id),
+    form.put(
+        route("products.production-batch.update", {
+            product: props.product.id,
+            productionBatch: form.id,
+        }),
         {
-            _method: "put",
-            name: form.name,
-            image_url: form.image_url,
-            notes: form.notes,
-            category_id: form.category_id,
-            production_batch_id: form.production_batch_id,
-            price: form.price,
-            sku: form.sku,
-            expiry_date: form.expiry_date,
-            has_image_url: form.has_image_url,
-        },
-        {
+            preserveScroll: false,
+            preserveState: true,
             onSuccess: () => {
                 closeCreateModal();
-                message.success("Product Updated Sucessfully!");
-                form.reset();
-                imageUrl.value = "";
-                fileList.value = [];
-                updateLoading.value = false;
+                message.success("Production Batch Updated Sucessfully!");
             },
         }
     );
@@ -213,43 +168,61 @@ const updateData = () => {
 
 const deleteData = () => {
     loading.value = true;
-    form.delete(route("products.destroy", selectedID.value), {
-        preserveScroll: false,
-        preserveState: true,
-        onSuccess: () => {
-            loading.value = false;
-            cancelDeleteData();
-            message.success("Product Deleted Sucessfully!");
-        },
-    });
+    form.delete(
+        route("products.production-batch.delete", {
+            product: props.product.id,
+            productionBatch: selectedID.value,
+        }),
+        {
+            preserveScroll: false,
+            preserveState: true,
+            onSuccess: () => {
+                loading.value = false;
+                cancelDeleteData();
+                message.success("Category Deleted Sucessfully!");
+            },
+        }
+    );
 };
+
+const productionDate = ref(null);
+const expirationDate = ref(null);
 
 const editData = (data) => {
     form.errors = {};
     form.reset();
-    imageUrl.value = data.image_url;
     isCreateModalVisible.value = true;
     isEdit.value = true;
-    form.id = data.id;
-    form.category_id = data.category_id;
-    form.production_batch_id = data.production_batch_id;
-    form.name = data.name;
-    form.notes = data.notes;
-    form.price = data.price;
-    form.sku = data.sku;
-    form.expiry_date = data.expiry_date;
-    expiryDate.value = dayjs(data.expiry_date);
+
+    for (const [key, value] of Object.entries(data)) {
+        form[key] = value;
+    }
+
+    form.stock = data.stock.stock;
+
+    productionDate.value = dayjs(data.production_date);
+    expirationDate.value = dayjs(data.expiration_date);
 };
 
-const addStockForm = useForm({
-    product_id: "",
-    stock: "",
-});
+const handleChangeDate = (value, dateString) => {
+    form.production_date = value.format("YYYY-MM-DD HH:mm");
+};
+
+const handleChangeExpirationDate = (value, dateString) => {
+    form.expiration_date = value.format("YYYY-MM-DD HH:mm");
+};
 
 const showAddStockModal = ref(false);
 
+const addStockForm = useForm({
+    production_batch_id: "",
+    stock_id: "",
+    stock: "",
+});
+
 const addStock = (data) => {
-    addStockForm.product_id = data.id;
+    addStockForm.production_batch_id = data.id;
+    addStockForm.stock_id = data.stock.id;
     showAddStockModal.value = true;
 };
 
@@ -259,16 +232,23 @@ const closeAddStockModal = () => {
 };
 
 const sumbitAddStock = () => {
-    addStockForm.post(route("products.addStock", addStockForm.product_id), {
-        preserveState: false,
-        preserveScroll: true,
-        onSuccess: () => {
-            message.success("Stock Added successfully");
-            addStockForm.reset();
-            showAddStockModal.value = false;
-            addStockForm.errors = {};
-        },
-    });
+    addStockForm.post(
+        route("products.production-batch.add-stock", {
+            product: props.product.id,
+            productionBatch: addStockForm.production_batch_id,
+            stock: addStockForm.stock_id,
+        }),
+        {
+            preserveState: false,
+            preserveScroll: true,
+            onSuccess: () => {
+                message.success("Stock Added successfully");
+                addStockForm.reset();
+                showAddStockModal.value = false;
+                addStockForm.errors = {};
+            },
+        }
+    );
 };
 
 watchDebounced(
@@ -292,9 +272,11 @@ watchDebounced(
 
 <template>
     <AuthenticatedLayout>
-        <Head title="Products" />
+        <Head title="Production Batches" />
         <div>
-            <p class="text-2xl font-bold">Product Returns</p>
+            <p class="text-2xl font-bold">
+                Production Batches ({{ props.product.name }})
+            </p>
             <div class="w-full">
                 <a-card :bordered="false" class="table-container">
                     <div class="flex justify-between table-header-action">
@@ -309,7 +291,7 @@ watchDebounced(
                             type="primary"
                             class="rounded-[5px]"
                             @click="showCreateModal"
-                            >Return Product</a-button
+                            >Add Production Batch</a-button
                         >
                     </div>
 
@@ -321,21 +303,6 @@ watchDebounced(
                             :pagination="{ ...pagination }"
                         >
                             <template #bodyCell="{ column, record }">
-                                <template v-if="column.dataIndex === 'image'">
-                                    <img
-                                        class="h-16 w-16 rounded-full"
-                                        :src="
-                                            record.image_url ??
-                                            '/storage/IMG_4359.jpg'
-                                        "
-                                    />
-                                </template>
-                                <template v-if="column.dataIndex === 'price'">
-                                    ₱ {{ record.price }}
-                                </template>
-                                <template v-if="column.dataIndex === 'stock'">
-                                    {{ record.stock?.stock ?? 0 }}
-                                </template>
                                 <template v-if="column.dataIndex === 'action'">
                                     <div class="flex gap-2">
                                         <a-tooltip title="Add Stock">
@@ -387,7 +354,11 @@ watchDebounced(
             <a-modal
                 :maskClosable="true"
                 v-model:open="isCreateModalVisible"
-                title="Return Product"
+                :title="
+                    isEdit
+                        ? 'Update Production Batch'
+                        : 'Create Production Batch'
+                "
                 :footer="false"
                 size="md"
             >
@@ -396,75 +367,58 @@ watchDebounced(
                     :wrapper-col="{ span: 24 }"
                     @submit.prevent="submitForm"
                 >
-                    <div></div>
                     <div>
                         <a-form-item
-                            label="Product"
+                            label="Batch Number"
                             :validate-status="
-                                form.errors.product_id ? 'error' : null
+                                form.errors.batch_number ? 'error' : null
                             "
-                            :help="form.errors.product_id"
+                            :help="form.errors.batch_number"
                         >
-                            <a-select
-                                ref="select"
-                                show-search
-                                allow-clear
-                                v-model:value="form.product_id"
-                                placeholder="Select Product"
-                                style="width: 100%"
-                                :options="
-                                    props.products
-                                        ?.map((product) => ({
-                                            value: product.id,
-                                            label: product.name,
-                                        }))
-                                        .sort((a, b) =>
-                                            a.label.localeCompare(b.label)
-                                        )
-                                "
-                                :filter-option="filterOption"
+                            <a-input
+                                placeholder="Batch Number"
+                                v-model:value="form.batch_number"
                             />
                         </a-form-item>
                         <a-form-item
-                            label="Production Batches"
+                            label="Production Date"
                             :validate-status="
-                                form.errors.production_batch_id ? 'error' : null
+                                form.errors.production_date ? 'error' : null
                             "
-                            :help="form.errors.production_batch_id"
+                            :help="form.errors.production_date"
                         >
-                            <a-select
-                                ref="select"
-                                show-search
-                                allow-clear
-                                v-model:value="form.production_batch_id"
-                                placeholder="Select Product"
+                            <a-date-picker
+                                v-model:value="expirationDate"
+                                placeholder="Production Date"
+                                @change="handleChangeDate"
                                 style="width: 100%"
-                                :options="productBatches"
-                                :filter-option="filterOption"
                             />
                         </a-form-item>
                         <a-form-item
-                            label="Stock Count"
+                            label="Expiration Date"
                             :validate-status="
-                                form.errors.count ? 'error' : null
+                                form.errors.expiration_date ? 'error' : null
                             "
-                            :help="form.errors.count"
+                            :help="form.errors.expiration_date"
+                        >
+                            <a-date-picker
+                                v-model:value="productionDate"
+                                placeholder="Production Date"
+                                @change="handleChangeExpirationDate"
+                                style="width: 100%"
+                            />
+                        </a-form-item>
+                        <a-form-item
+                            label="Stock"
+                            :validate-status="
+                                form.errors.stock ? 'error' : null
+                            "
+                            :help="form.errors.stock"
                         >
                             <a-input-number
-                                v-model:value="form.count"
-                                class="w-full"
-                            />
-                        </a-form-item>
-                        <a-form-item
-                            label="Reason"
-                            :validate-status="
-                                form.errors.reason ? 'error' : null
-                            "
-                            :help="form.errors.reason"
-                        >
-                            <a-textarea
-                                v-model:value="form.reason"
-                                class="w-full"
+                                style="width: 100%"
+                                v-model:value="form.stock"
+                                :min="0"
                             />
                         </a-form-item>
                     </div>
@@ -480,7 +434,7 @@ watchDebounced(
                                 <a-button
                                     type="primary"
                                     htmlType="submit"
-                                    :loading="form.processing || updateLoading"
+                                    :loading="form.processing"
                                     >{{
                                         isEdit ? "Update" : "Submit"
                                     }}</a-button
@@ -493,11 +447,11 @@ watchDebounced(
             <!-- Delete Confirmation -->
             <a-modal
                 v-model:open="visibleDeleteConfirmation"
-                title="Delete Product"
+                title="Delete Production Batch"
                 @ok="deleteData"
                 @cancel="cancelDeleteData"
             >
-                <p>Are you sure you want to delete this product?</p>
+                <p>Are you sure you want to delete this Production Batch?</p>
                 <p>Type '<b>delete</b>' to proceed</p>
                 <div class="mt-4">
                     <a-input v-model:value="deleteInput"></a-input>
@@ -511,13 +465,14 @@ watchDebounced(
                         type="primary"
                         danger
                         @click="deleteData"
-                        :loading="form.processing || updateLoading"
+                        :loading="form.processing"
                         :disabled="deleteInput !== 'delete'"
                     >
                         Delete
                     </a-button>
                 </template>
             </a-modal>
+
             <!-- Add Stock Modal -->
             <a-modal
                 v-model:open="showAddStockModal"

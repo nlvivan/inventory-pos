@@ -174,7 +174,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div>
+    <div class="">
         <a-card :bordered="false" :loading="loading">
             <template #title>
                 <div class="flex justify-between items-center">

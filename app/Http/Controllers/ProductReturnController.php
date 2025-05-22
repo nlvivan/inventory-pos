@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductionBatch;
 use App\Models\ProductReturn;
 use App\Models\Stock;
 use Illuminate\Http\Request;
@@ -17,12 +18,12 @@ class ProductReturnController extends Controller
         ]);
 
         $productReturns = ProductReturn::query()
-            ->with(['product', 'product.productionBatch'])
+            ->with(['product'])
             ->search($request->search)
             ->paginate($request->per_page);
 
         $products = Product::query()
-            ->with('productionBatch')
+            ->with(['productionBatches'])
             ->get();
 
         return Inertia::render('Admin/ProductReturns', [
@@ -36,13 +37,19 @@ class ProductReturnController extends Controller
     {
         $request->validate([
             'product_id' => 'required|exists:products,id',
+            'production_batch_id' => 'required|exists:production_batches,id',
             'count' => ['required',
                 'integer',
                 function ($attribute, $value, $fail) use ($request) {
                     $product = Product::find($request->product_id);
+                    $productionBatch = ProductionBatch::find($request->production_batch_id);
 
-                    if ($product && $value > $product->stock->stock) {
-                        $fail('The count must be less than or equal to the product stock.');
+                    if ($product && $productionBatch) {
+                        $stock = Stock::query()->where('product_id', $product->id)->where('production_batch_id', $productionBatch->id)->first();
+
+                        if ($stock && $value > $stock->stock) {
+                            $fail('The count must be less than or equal to the product stock.');
+                        }
                     }
                 }],
             'reason' => 'nullable|max:255',
@@ -50,11 +57,15 @@ class ProductReturnController extends Controller
 
         ProductReturn::create([
             'product_id' => $request->product_id,
+            'production_batch_id' => $request->production_batch_id,
             'count' => $request->count,
             'reason' => $request->reason,
         ]);
 
-        $productStock = Stock::query()->where('product_id', $request->product_id)->first();
+        $productStock = Stock::query()
+            ->where('product_id', $request->product_id)
+            ->where('production_batch_id', $request->production_batch_id)
+            ->first();
 
         if ($productStock) {
             $productStock->stock -= $request->count;

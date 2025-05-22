@@ -51,7 +51,14 @@ Route::middleware('auth')->group(function () {
             Route::resource('schedules', ScheduleController::class);
             Route::post('products/{product}/restore', action: [ProductController::class, 'restore'])->withTrashed()->name('products.restore');
             Route::get('products/archive', [ProductController::class, 'archive'])->name('products.archive');
-            Route::resource('products', ProductController::class);
+            Route::post('products/{product}', [ProductController::class, 'update'])->name('products.update');
+            Route::resource('products', ProductController::class)->except(['update']);
+
+            Route::get('/products/{product}/production-batches', [ProductionBatchController::class, 'index'])->name('products.production-batch');
+            Route::post('/products/{product}/production-batches', [ProductionBatchController::class, 'store'])->name('products.production-batch.store');
+            Route::put('/products/{product}/production-batches/{productionBatch}', [ProductionBatchController::class, 'update'])->name('products.production-batch.update');
+            Route::delete('/products/{product}/production-batches/{productionBatch}', [ProductionBatchController::class, 'destroy'])->name('products.production-batch.delete');
+            Route::post('/products/{product}/production-batches/{productionBatch}/stocks/{stock}/add-stock', [ProductionBatchController::class, 'addStock'])->name('products.production-batch.add-stock');
 
             Route::resource('product-returns', ProductReturnController::class);
             Route::resource('stocks', StockController::class);

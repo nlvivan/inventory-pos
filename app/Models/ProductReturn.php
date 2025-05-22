@@ -21,4 +21,9 @@ class ProductReturn extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    public function productionBatch(): BelongsTo
+    {
+        return $this->belongsTo(ProductionBatch::class);
+    }
 }
